@@ -1,33 +1,58 @@
 import React from "react";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 // import { SocketContext } from "../../context/CallContext";
+import  UserContext  from "../../context/AuthContext";
 import { useHistory } from 'react-router-dom';
 import { Grid, Paper, Input, Button, Card, CardHeader, CardContent, Divider, CardActions, TextField } from "@material-ui/core";
+import { useDispatch, useSelector } from 'react-redux'
+import { startCall, joinCall } from '../../redux/actions/CallActions'
+
 
 // styles
 import useStyles from "./styles";
 
-export default function CallStarter({ me, callAccepted, name, setName, callEnded, leaveCall, callUser }) {
+
+
+export default function CallStarter({ mySocketId, callAccepted, name, setName, callEnded, leaveCall, callUser }) {
     var classes = useStyles();
+    const dispatch = useDispatch()
+    const {user} = useContext(UserContext)
+    const { CallList } = useSelector((state) => state.calls)
     // const { me, callAccepted, name, setName, callEnded, leaveCall, callUser } = useContext(SocketContext);
-    const [idToCall, setIdToCall] = useState('');
+    const [callId, setCallId] = useState('');
     const [callName, setCallName] = useState('New Call');
+
 
     const history = useHistory()
 
-    const startCall = () => {
-      console.log(me)
-      history.push(`/app/call/${me}`);
+
+    const startCallHandler = () => { 
+      dispatch(startCall(`${user.firstName} ${user.lastName}`, callName, mySocketId))
+      .then(() => {
+          history.push(`/app/call/${CallList[0]._id}`)
+          console.log(CallList[0]._id)
+      }
+      )
     }
 
-    const joinCall = () => {     
-      callUser(idToCall)
-      console.log(idToCall)
-      history.push(`/app/call/${idToCall}`);
-    }  
+    const joinCallHandler = () => { 
+      dispatch(joinCall(`${user.firstName} ${user.lastName}`, callId, mySocketId))
+      .then(() => {
+        console.log(CallList)
+        callUser(CallList[0].participants[0].userSocketId)
+        history.push(`/app/call/${callId}`)
+      }
+      )
+    }
+
+    // const joinCall = () => {     
+    //   callUser(callId)
+    //   console.log(callId)
+    //   history.push(`/app/call/${callId}`);
+    // }  
 
     return(
-      <Grid container spacing={1} justify="center">
+      <>
         <Grid item xs={6}>
         <Card>
         <CardHeader
@@ -49,7 +74,7 @@ export default function CallStarter({ me, callAccepted, name, setName, callEnded
         <Button
           color="primary"
           variant="contained" 
-          onClick={() => startCall()}
+          onClick={() => startCallHandler()}
         >
         Start Call
         </Button>
@@ -70,15 +95,15 @@ export default function CallStarter({ me, callAccepted, name, setName, callEnded
             name="callId"
             helperText="Enter a call ID to join a call"
             variant="outlined"
-            value={idToCall} 
-            onChange={(e) => setIdToCall(e.target.value)}
+            value={callId} 
+            onChange={(e) => setCallId(e.target.value)}
           />
         <Divider />
         <CardActions>
         <Button 
           color="primary"
           variant="contained"
-          onClick={() => joinCall()}
+          onClick={() => joinCallHandler()}
         >
         Join Call
         </Button>
@@ -86,7 +111,6 @@ export default function CallStarter({ me, callAccepted, name, setName, callEnded
         </CardContent>
         </Card>
         </Grid>
-      </Grid>
+        </>
     )
 }
-

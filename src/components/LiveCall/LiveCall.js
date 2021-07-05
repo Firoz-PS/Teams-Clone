@@ -14,11 +14,11 @@ const LiveCall = ({ name, callAccepted, myVideo, userVideo, callEnded, stream, s
 
   useEffect(() => {
     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-      .then((currentStream) => {
-        setStream(currentStream);
+    .then((currentStream) => {
+      setStream(currentStream);
 
-        myVideo.current.srcObject = currentStream;
-      });
+      myVideo.current.srcObject = currentStream;
+    });
   }, []);
 
 //   const handleDisagree = () => {

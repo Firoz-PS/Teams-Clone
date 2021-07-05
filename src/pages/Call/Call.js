@@ -5,6 +5,7 @@ import { io } from 'socket.io-client';
 import Peer from 'simple-peer';
 import { HashRouter ,Switch,Route,withRouter} from 'react-router-dom';
 import { Grid, Paper } from "@material-ui/core";
+import {socket} from "../../context/AuthContext"
 
 // styles
 import useStyles from "./styles";
@@ -17,7 +18,7 @@ import LiveCall from "../../components/LiveCall/LiveCall";
 import CallStarter from "../../components/CallStarter/StartOrJoinCall"
 import PreviousCalls from "../../components/CallStarter/PreviousCalls";
 
-const socket = io('http://localhost:5000');
+// const socket = io('http://localhost:5000');
 // const socket = io('https://warm-wildwood-81069.herokuapp.com');
 
 const Call = ({isCallActive}) => {
@@ -30,7 +31,7 @@ const Call = ({isCallActive}) => {
   const [stream, setStream] = useState();
   const [name, setName] = useState('');
   const [call, setCall] = useState({});
-  const [me, setMe] = useState('');
+  const [mySocketId, setMySocketId] = useState('');
 
   const myVideo = useRef();
   const userVideo = useRef();
@@ -38,12 +39,13 @@ const Call = ({isCallActive}) => {
 
   useEffect(() => {
 
-    socket.on('me', (id) => setMe(id));
+    console.log(socket.id)
+    setMySocketId(socket.id)
 
     socket.on('callUser', ({ from, name: callerName, signal }) => {
       setCall({ isReceivingCall: true, from, name: callerName, signal });
     });
-  }, []);
+  },[]);
 
   const answerCall = () => {
     setCallAccepted(true);
@@ -68,7 +70,7 @@ const Call = ({isCallActive}) => {
     const peer = new Peer({ initiator: true, trickle: false, stream });
 
     peer.on('signal', (data) => {
-      socket.emit('callUser', { userToCall: id, signalData: data, from: me, name });
+      socket.emit('callUser', { userToCall: id, signalData: data, from: mySocketId, name });
     });
 
     peer.on('stream', (currentStream) => {
@@ -77,7 +79,6 @@ const Call = ({isCallActive}) => {
 
     socket.on('callAccepted', (signal) => {
       setCallAccepted(true);
-
       peer.signal(signal);
     });
 
@@ -93,9 +94,8 @@ const Call = ({isCallActive}) => {
   };
 
   return (
-    <>
-    {window.location.href.split("/")[6] ?
-    <Grid container>
+    <Grid container spacing={2}>
+    {isCallActive &&
     <Grid item xs={12}>
     <LiveCall 
         name={name} 
@@ -110,26 +110,24 @@ const Call = ({isCallActive}) => {
         leaveCall={leaveCall}
     />
     </Grid>
-    </Grid>
-    :
-    <Grid container>
-    <Grid item xs={12}>
-    <CallStarter 
-    me={me} 
-    callAccepted={callAccepted} 
-    name={name} 
-    setName={setName} 
-    callEnded={callEnded} 
-    leaveCall={leaveCall} 
-    callUser={callUser} 
-    />
-    </Grid>
-    <Grid item xs={12}>
-    <PreviousCalls />
-    </Grid>
-    </Grid>
     }
-    </>            
+    {!isCallActive && 
+      <>
+      <CallStarter 
+      mySocketId={mySocketId} 
+      callAccepted={callAccepted} 
+      name={name} 
+      setName={setName} 
+      callEnded={callEnded} 
+      leaveCall={leaveCall} 
+      callUser={callUser} 
+      />
+      <Grid item xs={12}>
+      <PreviousCalls />
+      </Grid>
+      </>
+    }    
+  </Grid>
   );
 }
 

@@ -1,8 +1,12 @@
 import React, { createContext, useEffect, useReducer } from 'react'
 import jwtDecode from 'jwt-decode'
 import axios from 'axios'
+import { io } from 'socket.io-client';
+
 
 const API_URL = "http://localhost:5000";
+export const socket = io(API_URL);
+
 
 const initialState = {
     isAuthenticated: false,

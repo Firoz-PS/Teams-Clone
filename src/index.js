@@ -9,15 +9,19 @@ import * as serviceWorker from "./serviceWorker";
 import { LayoutProvider } from "./context/LayoutContext";
 import { UserProvider } from "./context/AuthContext";
 import { CallProvider } from "./context/CallContext";
+import { Store } from './redux/Store'
+import { Provider } from 'react-redux'
+
+
 
 ReactDOM.render(
   <LayoutProvider>
     <UserProvider>
       <ThemeProvider theme={Themes.default}>
-        <CallProvider>
+      <Provider store={Store}>
           <CssBaseline />
           <App />
-          </CallProvider>
+          </Provider>
       </ThemeProvider>
     </UserProvider>
   </LayoutProvider>,

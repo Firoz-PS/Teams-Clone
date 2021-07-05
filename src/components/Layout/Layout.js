@@ -40,7 +40,8 @@ function Layout(props) {
           >
             <div className={classes.fakeToolbar} />
             <Switch>
-              <Route path="/app/call" component={Call}/>
+              <Route exact path="/app/call" component={() => <Call isCallActive={false} />}/>
+              <Route exact path="/app/call/:id" component={() => <Call isCallActive={true} />}/>
               <Route path="/app/profile" component={Profile}/>
               <Route path="/app/chat" component={Chat}/>
 
