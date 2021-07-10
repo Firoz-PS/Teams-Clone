@@ -1,48 +1,60 @@
 const initialState = {
-    CallList: [],
+    Contacts: [],
+    InvitesSent: [],
+    InvitesReceived: [],
+    SelectedContact: [],
+    ContactToView: []
 }
 
-const callReducer = (state = initialState, action) => {
+const contactReducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'SET_SOCKET_ID': {
-            state.CallList.push(action.payload.call)
+        case 'FETCH_CONTACT': {
+            state.Contacts = action.payload.contact.contacts
+            state.InvitesSent = action.payload.contact.invitesSent
+            state.InvitesReceived = action.payload.contact.invitesReceived
             return {
                 ...state,
             }
         }
-        case 'ADD_MY_STREAM': {
+        case 'SELECT_CONTACT': {
+            state.SelectedContact = action.payload
+            return {
+                ...state,
+            }
+        }
+        case 'ADD_CONTACT': {
             const { myStream } = action.payload
             return {
                 ...state,
                 myStream
             }
         }
-        case 'INCOMING_CALL': {
-            const { call } = action.payload
+        case 'ADD_INVITE_SENT': {
+            state.InvitesSent = action.payload.invitesSent
+            console.log(state)
             return {
                 ...state,
-                call
             }
         }
-        case 'START_CALL': {
+        case 'ADD_INVITE_RECEIVED': {
             state.CallList.push(action.payload.call)
             return {
                 ...state,
             }
         }
-        case 'JOIN_CALL': {
+        case 'REMOVE_CONTACT': {
             state.CallList.push(action.payload.call)
             return {
                 ...state,
             }
         }
-        case 'ANSWER_CALL': {
+        case 'REMOVE_INVITE_SENT': {
             state.CallList[0].participants.push(action.payload.participant)
             return {
                 ...state,
             }
         }
-        case 'REMOVE_PARTCIPANT': {
+        case 'REMOVE_INVITE_RECEIVED': {
             state.CallList[0].participants.splice(
                 state.CallList[0].participants.findIndex(participant =>
                 participant.userId === action.payload.userId), 1
@@ -51,24 +63,10 @@ const callReducer = (state = initialState, action) => {
                 ...state,
             }
         }
-        case 'LEAVE_CALL': {
-            return {
-                ...state,
-                callId: null,
-                mySocketId: null,
-            }
-        }
-        case 'END_CALL': {
-            return {
-                ...state,
-                callId: null,
-                mySocketId: null,
-            }
-        }
         default: {
             return { ...state }
         }
     }
 }
 
-export default callReducer
+export default contactReducer

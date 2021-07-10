@@ -1,8 +1,17 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {List, ListItem , ListItemAvatar, ListItemText, Avatar, Badge, Card, AppBar, Typography, Fab, CardContent, CardHeader, Divider, Tabs, Tab} from '@material-ui/core';
 
 import "react-perfect-scrollbar/dist/css/styles.css";
 import PerfectScrollbar from "react-perfect-scrollbar";
+
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addContact,
+  removeInviteSent,
+  removeInviteReceived
+} from "../../redux/actions/ContactActions";
+import UserContext from "../../context/AuthContext";
+
 
 // styles
 import useStyles from "./styles";
@@ -106,7 +115,13 @@ const invitesSent = [
 
 
 const ManageInvites = () => {
-    var classes = useStyles()
+    var classes = useStyles();
+    const dispatch = useDispatch();
+    const { user, searchUser, searchResult } = useContext(UserContext);
+    const { InvitesSent, InvitesReceived } = useSelector((state) => state.contacts);
+    const [isLoading, setIsLoading] = useState(null);
+    const [searchValue, setSearchValue] = useState("");
+    const [isSearching, setIsSearching] = useState(false);
     const [activeTabId, setActiveTabId] = useState(0);
 
 
@@ -134,7 +149,6 @@ const ManageInvites = () => {
                 <ListItem button key={item.id}>
                 <ListItemAvatar>
                     <Avatar src={item.avatar}>
-                    {item.mood}
                     </Avatar>
                 </ListItemAvatar>
                 <ListItemText

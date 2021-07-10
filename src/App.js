@@ -13,7 +13,8 @@ import UserContext from "./context/AuthContext";
 
 export default function App() {
   // global
-  const { isAuthenticated } = useContext(UserContext);
+  const { isAuthenticated, user } = useContext(UserContext);
+  console.log(user)
 
   return (
     <HashRouter>

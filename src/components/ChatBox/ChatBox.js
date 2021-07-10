@@ -1,204 +1,143 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { IconButton, Icon, Divider, TextField, Avatar, Card, CardHeader, CardContent, Fab, Typography, Badge } from '@material-ui/core'
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import {
-    MoreVert as MoreVertIcon ,
-    Send as SendIcon, 
-} from "@material-ui/icons";
-// import { getChatRoomByContactId } from "app/views/chat-box/ChatService";
+  IconButton,
+  Icon,
+  Divider,
+  TextField,
+  Avatar,
+  Card,
+  CardHeader,
+  CardContent,
+  Fab,
+  Typography,
+  Badge,
+  CircularProgress
+} from "@material-ui/core";
+import { MoreVert as MoreVertIcon, Send as SendIcon } from "@material-ui/icons";
 
 import "react-perfect-scrollbar/dist/css/styles.css";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
+import { useDispatch, useSelector } from "react-redux";
+import { fetchChatDetails, sendMessage } from "../../redux/actions/ChatActions";
+import UserContext from "../../context/AuthContext";
+import { socket } from "../../context/AuthContext";
+
+
 // styles
 import useStyles from "./styles";
 
-// for previewing bot message
-const globalMessageList = []
-
 const ChatBox = () => {
-    var classes = useStyles()
+  var classes = useStyles();
+  const dispatch = useDispatch();
+  const { user } = useContext(UserContext);
+  const { SelectedContact } = useSelector((state) => state.contacts);
+  const { ChatContent } = useSelector((state) => state.chats);
+  const [isLoading, setIsLoading] = useState(null);
 
-    const [isAlive, setIsAlive] = useState(true)
-    const [message, setMessage] = useState('')
-    const [messageList, setMessageList] = useState([])
-    const currentUserId = '7863a6802ez0e277a0f98534'
-    const chatBottomRef = document.querySelector('#chat-scroll')
-
-    useEffect(() => {
-        if (isAlive) {
-    setMessageList([
-        {
-            contactId: '323sa680b3249760ea21rt47',
-            text:
-                'Do you ever find yourself falling into the “discount trap?”',
-            time: '2018-02-10T08:45:28.291Z',
-            id: '323sa680b3249760ea21rt47',
-            name: 'Frank Powell',
-            avatar: '/assets/faces/13.jpg',
-            status: 'online',
-            mood: '',
-        },
-        {
-            contactId: '7863a6802ez0e277a0f98534',
-            text:
-                'Giving away your knowledge or product just to gain clients?',
-            time: '2018-02-10T08:45:28.291Z',
-            id: '7863a6802ez0e277a0f98534',
-            name: 'John Doe',
-            avatar: '/assets/3.jpg',
-            status: 'online',
-            mood: '',
-        },
-        {
-            contactId: '323sa680b3249760ea21rt47',
-            text: 'Yes',
-            time: '2018-02-10T08:45:28.291Z',
-            id: '323sa680b3249760ea21rt47',
-            name: 'Frank Powell',
-            avatar: '/assets/faces/13.jpg',
-            status: 'online',
-            mood: '',
-        },
-        {
-            contactId: '7863a6802ez0e277a0f98534',
-            text: 'Don’t feel bad. It happens to a lot of us',
-            time: '2018-02-10T08:45:28.291Z',
-            id: '7863a6802ez0e277a0f98534',
-            name: 'John Doe',
-            avatar: '/assets/3.jpg',
-            status: 'online',
-            mood: '',
-        },
-        {
-            contactId: '323sa680b3249760ea21rt47',
-            text:
-                'Do you ever find yourself falling into the “discount trap?”',
-            time: '2018-02-10T08:45:28.291Z',
-            id: '323sa680b3249760ea21rt47',
-            name: 'Frank Powell',
-            avatar: '/assets/faces/13.jpg',
-            status: 'online',
-            mood: '',
-        },
-        {
-            contactId: '7863a6802ez0e277a0f98534',
-            text:
-                'Giving away your knowledge or product just to gain clients?',
-            time: '2018-02-10T08:45:28.291Z',
-            id: '7863a6802ez0e277a0f98534',
-            name: 'John Doe',
-            avatar: '/assets/3.jpg',
-            status: 'online',
-            mood: '',
-        },
-        {
-            contactId: '323sa680b3249760ea21rt47',
-            text: 'Yes',
-            time: '2018-02-10T08:45:28.291Z',
-            id: '323sa680b3249760ea21rt47',
-            name: 'Frank Powell',
-            avatar: '/assets/faces/13.jpg',
-            status: 'online',
-            mood: '',
-        },
-        {
-            contactId: '7863a6802ez0e277a0f98534',
-            text: 'Don’t feel bad. It happens to a lot of us',
-            time: '2018-02-10T08:45:28.291Z',
-            id: '7863a6802ez0e277a0f98534',
-            name: 'John Doe',
-            avatar: '/assets/3.jpg',
-            status: 'online',
-            mood: '',
-        },
-    ])
-}
-}, [isAlive])
+  const [message, setMessage] = useState("");
+  const chatBottomRef = document.querySelector("#chat-scroll");
 
 
-    const sendMessageOnEnter = (event) => {
-        if (event.key === 'Enter' && !event.shiftKey) {
-            let tempMessage = message.trim()
-            if (tempMessage !== '') {
-                let tempList = [...messageList]
-                let messageObject = {
-                    text: tempMessage,
-                    contactId: currentUserId,
-                }
-                tempList.push(messageObject)
-                globalMessageList.push(messageObject)
-                if (isAlive) setMessageList(tempList)
-            }
-            setMessage('')
-        }
+  useEffect(() => {
+    setIsLoading(true);
+    {
+      SelectedContact[0] &&
+        dispatch(fetchChatDetails(SelectedContact[0].chatId))
+        .then(() => {
+          setIsLoading(false);
+        });
     }
+  }, [SelectedContact[0]]);
+  
 
-    const scrollToBottom = useCallback(() => {
-        if (chatBottomRef) {
-            chatBottomRef.scrollTo({
-                top: chatBottomRef.scrollHeight,
-                behavior: 'smooth',
-            })
-        }
-    }, [chatBottomRef])
+  const sendMessageOnEnter = (event) => {
+      console.log( event.type)
+      if(event.key === "Enter" || event.type === "click" && !event.shiftKey){
+                dispatch(sendMessage(SelectedContact[0].chatId, `${user.firstName} ${user.lastName}`, message.trim()))
+                socket.emit("messageSent")
+          setMessage("");
+      }
+  };
 
+  console.log(SelectedContact)
+  socket.on("updateChat", () => {
+      console.log("here")
+    dispatch(fetchChatDetails(SelectedContact[0].chatId))
+});
 
-    useEffect(() => {
-        scrollToBottom()
-        return () => setIsAlive(false)
-    }, [messageList, scrollToBottom])
+  const scrollToBottom = useCallback(() => {
+    if (chatBottomRef) {
+      chatBottomRef.scrollTo({
+        top: chatBottomRef.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [chatBottomRef]);
 
-    return (  
-        <Card className={classes.cardBody} fullWidth>
-        <CardHeader
+  useEffect(() => {
+    scrollToBottom();
+  }, [ChatContent, scrollToBottom]);
+
+  return (
+      <Card className={classes.cardBody} fullWidth>
+      <CardHeader
         avatar={
-            <Avatar aria-label="recipe" >
-              OU
-            </Avatar>
+          <Avatar src={SelectedContact[0] && SelectedContact[0].avatar}>
+            OU
+          </Avatar>
         }
         action={
-            <IconButton aria-label="settings">
-              <MoreVertIcon />
-            </IconButton>
-        }    
-        title="Other User"
-        subheader="offline"
+          <IconButton aria-label="settings">
+            <MoreVertIcon />
+          </IconButton>
+        }
+        title={SelectedContact[0] && SelectedContact[0].userName}
         className={classes.header}
-        />
-        <Divider />
-        <CardContent className={classes.content}>
+      />
+      <Divider />
+      <CardContent className={classes.chatBoxContent}>
         <PerfectScrollbar id="chat-scroll">
-        {messageList.map((item) => (
-            <div className={currentUserId == item.contactId ? classes.myMessage : classes.theirMessage}>
-                <div className={classes.chatAvatarContainer}>
-                <Badge 
-                color={item.status == "online" ? "primary" : "secondary"} 
-                overlap="circle"
-                variant="dot"
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                }}
-                >
-                    <Avatar src={item.avatar} />
-                </Badge>
-                </div>    
+          {!SelectedContact[0] && (
+            <Typography>Select a contact to start chatting </Typography>
+          )}
+          {SelectedContact[0] && isLoading && <CircularProgress size={60} />}
+          {SelectedContact[0] && !isLoading && !ChatContent[0] && (
+            <Typography>
+              start chatting with {SelectedContact[0].userName}
+            </Typography>
+          )}
+          {SelectedContact[0] &&
+            !isLoading &&
+            ChatContent[0] &&
+            ChatContent.map((item) => (
+              <div
+                className={
+                  user.id == item.userId
+                    ? classes.myMessage
+                    : classes.theirMessage
+                }
+              >
                 <div>
-                <Typography variant="subtitle2">
-                {item.name}
-                </Typography>
-                    <Card className={currentUserId == item.contactId ? classes.myMessageCard : classes.theirMessageCard}>
-                        {item.text}
-                    </Card>
-                    <Typography variant="caption" gutterBottom>
-                        1 minute ago
-                    </Typography>
+                  <Typography variant="subtitle2">{item.userName}</Typography>
+                  <Card
+                    className={
+                      user.id == item.userId
+                        ? classes.myMessageCard
+                        : classes.theirMessageCard
+                    }
+                  >
+                    {item.text}
+                  </Card>
+                  <Typography variant="caption" gutterBottom>
+                    1 minute ago
+                  </Typography>
                 </div>
-            </div>
-        ))}
+              </div>
+            ))}
         </PerfectScrollbar>
         <div className={classes.input}>
-        <TextField
+          <TextField
             variant="outlined"
             label="Type here ..."
             multiline
@@ -207,15 +146,14 @@ const ChatBox = () => {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyUp={sendMessageOnEnter}
-        />
-        <Fab color="primary" aria-label="send">
-        <SendIcon  />
-        </Fab>
+          />
+          <Fab color="primary" aria-label="send" onClick={sendMessageOnEnter}>
+            <SendIcon />
+          </Fab>
         </div>
-        </CardContent>  
-        </Card>          
-
-    )
-}
+      </CardContent>
+    </Card>
+  );
+};
 
 export default ChatBox;

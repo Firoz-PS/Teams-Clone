@@ -35,21 +35,8 @@ const ViewContactDetails = () => {
           title="Contact Details"
         />
         <Divider />
-        <CardContent className={classes.content}>
-        <Box
-        sx={{
-          alignItems: 'center',
-          display: 'flex',
-          flexDirection: 'column'
-        }}
-        >
-        <Avatar
-          src={user.avatar}
-          sx={{
-            height: 100,
-            width: 100
-          }}
-        />
+        <CardContent className={classes.userDetailsCard}>
+        <UserAvatar firstName={user.firstName} lastName={user.lastName} size={`90px`} />
         <Typography
           color="textPrimary"
           gutterBottom
@@ -60,26 +47,30 @@ const ViewContactDetails = () => {
         <Typography
           color="textSecondary"
           variant="body1"
+          gutterBottom
         >
-          {user.email}
+          Email : {user.email}
         </Typography>
         <Typography
           color="textSecondary"
           variant="body1"
+          gutterBottom
         >
-          {user.phoneNo}
+          Phone Number: {user.phoneNo}
         </Typography>
         <Typography
         color="textSecondary"
         variant="body1"
+        gutterBottom
       >
-        {user.organization}
+        Organization : {user.organization}
       </Typography>
       <Typography
       color="textSecondary"
       variant="body1"
+      gutterBottom
     >
-      {user.dateOfBirth}
+      Date of Birth : {user.dateOfBirth}
     </Typography>
     <Divider />
         <CardActions>
@@ -91,8 +82,7 @@ const ViewContactDetails = () => {
         Remove from contacts
         </Button>
         </CardActions>
-        </Box>
-        </CardContent>        
+        </CardContent>      
       </Card>
   );
 };

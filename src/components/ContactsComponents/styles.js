@@ -15,11 +15,12 @@ export default makeStyles(theme => ({
     height: "75vh",
     position: "relative"  
   },
-  detailsCard: {
+  userDetailsCard: {
+    height: "75vh",
+    position: "relative",
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'column',
-    height: '320px'
   },
   newChatButton: {
     position: "absolute",

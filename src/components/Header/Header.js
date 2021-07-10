@@ -7,7 +7,7 @@ import {
   Menu,
   MenuItem,
   Fab,
-  Link
+  Link,
 } from "@material-ui/core";
 import {
   Menu as MenuIcon,
@@ -73,7 +73,7 @@ export default function Header(props) {
   var layoutState = useLayoutState();
   var layoutDispatch = useLayoutDispatch();
   // var userDispatch = useUserDispatch();
-  const { userSignOut, user} = useContext(UserContext)
+  const { userSignOut, user } = useContext(UserContext);
 
   // local
   var [mailMenu, setMailMenu] = useState(null);
@@ -141,7 +141,7 @@ export default function Header(props) {
           color="inherit"
           aria-haspopup="true"
           aria-controls="mail-menu"
-          onClick={e => {
+          onClick={(e) => {
             setMailMenu(e.currentTarget);
             setIsMailsUnread(false);
           }}
@@ -159,7 +159,7 @@ export default function Header(props) {
           color="inherit"
           className={classes.headerMenuButton}
           aria-controls="profile-menu"
-          onClick={e => setProfileMenu(e.currentTarget)}
+          onClick={(e) => setProfileMenu(e.currentTarget)}
         >
           <AccountIcon classes={{ root: classes.headerIcon }} />
         </IconButton>
@@ -185,10 +185,10 @@ export default function Header(props) {
               {messages.length} New Messages
             </Typography>
           </div>
-          {messages.map(message => (
+          {messages.map((message) => (
             <MenuItem key={message.id} className={classes.messageNotification}>
               <div className={classes.messageNotificationSide}>
-                <UserAvatar color={message.variant} name={message.name} />
+                <UserAvatar color={message.variant} firstName={user.firstName} lastName={user.lastName}/>
                 <Typography size="sm" color="text" colorBrightness="secondary">
                   {message.time}
                 </Typography>

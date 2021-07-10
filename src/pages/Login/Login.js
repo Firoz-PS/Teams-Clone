@@ -32,12 +32,31 @@ function Login(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [activeTabId, setActiveTabId] = useState(0);
-  const [signupFirstNameValue, setSignupFirstNameValue] = useState("");
-  const [signupLastNameValue, setSignupLastNameValue] = useState("");
-  const [signupEmailValue, setSignupEmailValue] = useState("");
-  const [signupPasswordValue, setSignupPasswordValue] = useState("");
+  const [signupFirstNameValue, setSignupFirstNameValue] = useState("NT");
+  const [signupLastNameValue, setSignupLastNameValue] = useState("1");
+  const [signupEmailValue, setSignupEmailValue] = useState("nt1@teamsclone.com");
+  const [signupPasswordValue, setSignupPasswordValue] = useState("1");
   const [loginEmailValue, setLoginEmailValue] = useState("firoz@teamsclone.com");
   const [loginPasswordValue, setLoginPasswordValue] = useState("12345678");
+
+  const sigUpHandler = () =>{
+    setError(false);
+    setIsLoading(true);
+    userSignUp(
+      signupFirstNameValue,
+      signupLastNameValue,
+      signupEmailValue,
+      signupPasswordValue,
+      props.history,
+      setIsLoading,
+      setError,
+    )
+    .then (() => {
+      setError(false)
+      setIsLoading(false)
+    }
+    )
+  }
 
   return (
     <Grid container className={classes.container}>
@@ -212,21 +231,12 @@ function Login(props) {
                   <CircularProgress size={26} />
                 ) : (
                   <Button
-                    onClick={() =>
-                      userSignUp(
-                        signupFirstNameValue,
-                        signupLastNameValue,
-                        signupEmailValue,
-                        signupPasswordValue,
-                        props.history,
-                        setIsLoading,
-                        setError,
-                      )
-                    }
+                    onClick={sigUpHandler}
                     disabled={
                       signupEmailValue.length === 0 ||
                       signupPasswordValue.length === 0 ||
-                      signupFirstNameValue.length === 0
+                      signupFirstNameValue.length === 0 ||
+                      signupLastNameValue.length === 0
                     }
                     size="large"
                     variant="contained"

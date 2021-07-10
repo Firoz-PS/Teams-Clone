@@ -30,48 +30,15 @@ const UpdateAvatar = () => {
   const { user, updateAvatar } = useContext(UserContext)
   const [avatar, setAvatar] = useState(user.avatar)
 
-  const handlePhoto = (event) => {
-    console.log(avatar)
-    setAvatar(
-      event.target.files[0]
-    )
-  };
-
-  const handleAvatarSubmit = (e) => {
-    e.preventDefault()
-    const formData = new FormData()
-    formData.append("avatar", `${avatar}`)
-    console.log(formData)
-    updateAvatar(formData);
-  }
-
   return (
-    <form
-      autoComplete="off"
-      noValidate
-      encType="multipart/form-data"
-    >
       <Card>
         <CardHeader
-          title="Edit Profile"
-          subheader="Profile picture can be updated"  
+          title="Your Profile"
+          subheader="This is how your profile appears to others"  
         />
         <Divider />
-        <CardContent>
-        <Box
-        sx={{
-          alignItems: 'center',
-          display: 'flex',
-          flexDirection: 'column'
-        }}
-        >
-        <Avatar
-          src={avatar}
-          sx={{
-            height: 100,
-            width: 100
-          }}
-        />
+        <CardContent className={classes.detailsCard}>
+        <UserAvatar firstName={user.firstName} lastName={user.lastName} size={`90px`} />
         <Typography
           color="textPrimary"
           gutterBottom
@@ -82,43 +49,33 @@ const UpdateAvatar = () => {
         <Typography
           color="textSecondary"
           variant="body1"
+          gutterBottom
         >
-          {user.email}
+          Email : {user.email}
         </Typography>
         <Typography
           color="textSecondary"
           variant="body1"
+          gutterBottom
         >
-          {user.phoneNo}
+          Phone Number: {user.phoneNo}
         </Typography>
-        <CardActions>
-        <Button
-          color="primary"
-          fullWidth
-          variant="contained"
-          component="label"
-        >
-          Upload picture
-          <Input 
-            type="file"
-            accept="image/*"
-            className={classes.hiddenInput}
-            onChange={handlePhoto}
-          />
-        </Button>
-        <Button
-          color="primary"
-          fullWidth
-          type="submit"
-          onClick={handleAvatarSubmit}
-        >
-        Confirm Changes
-        </Button>
-        </CardActions>
-        </Box>
+        <Typography
+        color="textSecondary"
+        variant="body1"
+        gutterBottom
+      >
+        Organization : {user.organization}
+      </Typography>
+      <Typography
+      color="textSecondary"
+      variant="body1"
+      gutterBottom
+    >
+      Date of Birth : {user.dateOfBirth}
+    </Typography>
         </CardContent>        
       </Card>
-    </form>
   );
 };
 

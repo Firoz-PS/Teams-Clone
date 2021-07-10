@@ -5,7 +5,7 @@ import { Divider, Grid, Paper, AppBar } from "@material-ui/core";
 import useStyles from "./styles";
 
 // components
-import ChatContacts from '../../components/ChatContacts/ChatContacts';
+import ChatContacts from '../../components/ChatBox/ChatContacts';
 import ChatBox from '../../components/ChatBox/ChatBox';
 
 export default function Chat() {

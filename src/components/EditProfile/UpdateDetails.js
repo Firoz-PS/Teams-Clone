@@ -26,16 +26,17 @@ import useStyles from "./styles";
 
 const UpdateDetails = () => {
   const classes = useStyles()
-  const { user } = useContext(UserContext)
-
-  const [values, setValues] = useState({
+  const { user, updateBasicDetails } = useContext(UserContext)
+  const initialState = {
     firstName: `${user.firstName}`,
     lastName: `${user.lastName}`,
     email: `${user.email}`,
     phoneNo: `${user.phoneNo}`,
-    organization: ``,
-    dateOfBirth: ``
-  });
+    organization: `${user.organization}`,
+    dateOfBirth: `${user.dateOfBirth}`
+  }
+  const [values, setValues] = useState(initialState);
+  const [isEditing, setIsEditing] = useState(false)
 
   const handleChange = (event) => {
     setValues({
@@ -43,6 +44,15 @@ const UpdateDetails = () => {
       [event.target.name]: event.target.value
     });
   };
+
+  const handleCancel =() => {
+    setValues(initialState)
+    setIsEditing(false)
+  }
+
+  const handleSaveDetails = () => {
+    updateBasicDetails(values)
+  }
 
   return (
     <form
@@ -55,7 +65,7 @@ const UpdateDetails = () => {
           title="Edit Details"
           subheader="basic details except email can be edited"
           action={
-            <IconButton aria-label="edit-profile" className={classes.editIcon}>
+            <IconButton aria-label="edit-profile" className={classes.editIcon} onClick={() => setIsEditing(true)}>
               <EditIcon />
             </IconButton>
         }    
@@ -78,6 +88,7 @@ const UpdateDetails = () => {
             onChange={handleChange}
             value={values.firstName}
             variant="outlined"
+            disabled={!isEditing}
           />
         </Grid>
         <Grid
@@ -92,6 +103,7 @@ const UpdateDetails = () => {
             onChange={handleChange}
             value={values.lastName}
             variant="outlined"
+            disabled={!isEditing}
           />
         </Grid>
         <Grid
@@ -122,6 +134,7 @@ const UpdateDetails = () => {
             onChange={handleChange}
             value={values.phoneNo}
             variant="outlined"
+            disabled={!isEditing}
           />
         </Grid> 
         <Grid
@@ -136,6 +149,7 @@ const UpdateDetails = () => {
             onChange={handleChange}
             value={values.organization}
             variant="outlined"
+            disabled={!isEditing}
           />
         </Grid>
         <Grid
@@ -150,8 +164,9 @@ const UpdateDetails = () => {
             onChange={handleChange}
             value={values.dateOfBirth}
             variant="outlined"
+            InputLabelProps={{ shrink: true }}
             type="date"
-            placeholder="none"
+            disabled={!isEditing}
           />
         </Grid>
         </Grid>
@@ -167,9 +182,20 @@ const UpdateDetails = () => {
           <Button
             color="primary"
             variant="contained"
+            disabled={!isEditing}
+            onClick={() => handleSaveDetails()}
           >
             Save details
           </Button>
+          {isEditing &&           
+            <Button
+            color="primary"
+            variant="outlined"
+            onClick={() => handleCancel()}
+          >
+            Cancel
+          </Button>}
+
         </Box>
       </Card>
     </form>

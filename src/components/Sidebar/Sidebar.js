@@ -14,7 +14,8 @@ import {
   Poll as PollIcon,
   ColorLens as CustomizationIcon,
   Settings as SettingsIcon,
-  Person as ProfileIcon
+  Person as ProfileIcon,
+  Contacts as ContactsIcon,
 } from "@material-ui/icons";
 import { useTheme } from "@material-ui/styles";
 import { withRouter } from "react-router-dom";
@@ -51,6 +52,12 @@ const structure = [
     label: "Profile",
     link: "/app/profile",
     icon: <ProfileIcon />,
+  },
+  {
+    id: 9,
+    label: "contacts",
+    link: "/app/contacts",
+    icon: <ContactsIcon />,
   },
   {
     id: 3,

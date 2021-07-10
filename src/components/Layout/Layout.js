@@ -18,6 +18,7 @@ import Sidebar from "../Sidebar/Sidebar";
 import Call from "../../pages/Call/Call";
 import Profile from "../../pages/Profile/Profile";
 import Chat from "../../pages/Chat/Chat";
+import Contacts from "../../pages/Contacts/Contacts";
 
 // context
 import { useLayoutState } from "../../context/LayoutContext";
@@ -43,6 +44,7 @@ function Layout(props) {
               <Route exact path="/app/call" component={() => <Call isCallActive={false} />}/>
               <Route exact path="/app/call/:id" component={() => <Call isCallActive={true} />}/>
               <Route path="/app/profile" component={Profile}/>
+              <Route path="/app/contacts" component={Contacts}/>
               <Route path="/app/chat" component={Chat}/>
 
             </Switch>

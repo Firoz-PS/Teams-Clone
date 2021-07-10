@@ -7,8 +7,12 @@ export default makeStyles(theme => ({
   header: {
     backgroundColor: theme.palette.primary.light,
   },
-  content: {
+  chatBoxContent: {
     height: "70vh",
+    position: "relative"  
+  },
+  chatContactsContent: {
+    height: "75vh",
     position: "relative"  
   },
   input: {

@@ -12,6 +12,7 @@ const initialState = {
     isAuthenticated: false,
     isInitialised: false,
     user: null,
+    searchResult: []
 }
 
 const isValidToken = (accessToken) => {
@@ -56,10 +57,18 @@ const userReducer = (state, action) => {
         }
         case 'USER_SIGN_UP': {
             const { user } = action.payload
+            console.log(user)
             return {
                 ...state,
-                isAuthenticated: true,
                 user,
+                isAuthenticated: true,
+            }
+        }
+        case 'SEARCH_USER': {
+            const { searchResult } = action.payload
+            return {
+                ...state,
+                searchResult
             }
         }
         case 'USER_SIGN_OUT': {
@@ -67,6 +76,13 @@ const userReducer = (state, action) => {
                 ...state,
                 isAuthenticated: false,
                 user: null,
+            }
+        }       
+        case 'UPDATE_BASIC_DETAILS': {
+            const { user } = action.payload
+            return {
+                ...state,
+                user,
             }
         }
         case 'UPDATE_AVATAR': {
@@ -86,6 +102,8 @@ const UserContext = createContext({
     userSignOut: () => {},
     userSignUp: () => {},
     updateAvatar: () => {},
+    searchUser: () => {},
+    updateBasicDetails: () => {}
 })
 
 export const UserProvider = ({ children }) => {
@@ -142,25 +160,21 @@ const userSignIn = async (email, password, history, setIsLoading, setError) => {
     dispatch({
         type: 'USER_SIGN_IN',
         payload: {
-            user,
+            user
         },
     })
     history.push('/app/call')
 }
 
 const userSignUp = async (firstName, lastName, email, password, history, setIsLoading, setError) => {
-    setError(false);
-    setIsLoading(true);
     const res = await axios.post(API_URL + '/api/user/signup', {
         firstName,
         lastName,
         email,
         password,
     })
-    const { accessToken, user } = res
+    const { accessToken, user } = res.data
     setToken(accessToken)
-    setError(false)
-    setIsLoading(false)
     dispatch({
         type: 'USER_SIGN_UP',
         payload: {
@@ -168,6 +182,40 @@ const userSignUp = async (firstName, lastName, email, password, history, setIsLo
         },
     })
     history.push('/app/call')
+    return Promise.resolve();
+}
+
+const updateBasicDetails = async (values) => {
+    const res = await axios.put(API_URL + '/api/user/update/BASIC', {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        phoneNo: values.phoneNo,
+        organization: values.organization,
+        dateOfBirth: values.dateOfBirth
+    })
+    const { user } = res.data
+    dispatch({
+        type: 'UPDATE_BASIC_DETAILS',
+        payload: {
+            user,
+        },
+    })
+    return Promise.resolve();
+}
+
+const searchUser = async (searchValue, contactInfosId) => {
+    const res = await axios.put(API_URL + '/api/user/search', {
+        searchValue,
+        contactInfosId
+    })
+    const { searchResult } = res.data
+    dispatch({
+        type: 'SEARCH_USER',
+        payload: {
+            searchResult
+        },
+    })
+    return Promise.resolve();
 }
 
 const userSignOut = async (history) => {
@@ -198,6 +246,8 @@ return (
             userSignOut,
             userSignUp,
             updateAvatar,
+            searchUser,
+            updateBasicDetails
         }}
     >
         {children}
