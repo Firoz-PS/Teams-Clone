@@ -12,11 +12,9 @@ import useStyles from "./styles";
 
 
 // components
-import Widget from "../../components/Widget/Widget";
-import { Typography } from "../../components/Wrappers/Wrappers";
-import LiveCall from "../../components/LiveCall/LiveCall";
-import CallStarter from "../../components/CallStarter/StartOrJoinCall"
-import PreviousCalls from "../../components/CallStarter/PreviousCalls";
+import LiveCall from "../../components/CallComponents/LiveCall";
+import CallStarter from "../../components/CallComponents/StartOrJoinCall"
+import PreviousCalls from "../../components/CallComponents/PreviousCalls";
 
 // const socket = io('http://localhost:5000');
 // const socket = io('https://warm-wildwood-81069.herokuapp.com');

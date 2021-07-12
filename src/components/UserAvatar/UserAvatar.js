@@ -3,21 +3,23 @@ import { useTheme } from "@material-ui/styles";
 
 // styles
 import useStyles from "./styles";
+import { Typography } from "@material-ui/core";
 
 // components
-import { Typography } from "../Wrappers/Wrappers";
 
 export default function UserAvatar({ color = "primary", ...props }) {
   var classes = useStyles();
   var theme = useTheme();
 
-  var letters =`${props.firstName[0]}  ${props.lastName[0]}`
-  console.log(letters)
+  var letters = props.name
+    .split(" ")
+    .map(word => word[0])
+    .join("");
 
   return (
     <div
       className={classes.avatar}
-      style={{ backgroundColor: theme.palette[color].main, width: props.size, height: props.size }}
+      style={{ backgroundColor: theme.palette.secondary.light, width: props.size, height: props.size }}
     >
       <Typography className={classes.text}>{letters}</Typography>
     </div>

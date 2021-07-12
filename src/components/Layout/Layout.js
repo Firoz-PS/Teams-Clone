@@ -19,6 +19,8 @@ import Call from "../../pages/Call/Call";
 import Profile from "../../pages/Profile/Profile";
 import Chat from "../../pages/Chat/Chat";
 import Contacts from "../../pages/Contacts/Contacts";
+import Settings from "../../pages/Settings/Settings";
+
 
 // context
 import { useLayoutState } from "../../context/LayoutContext";
@@ -46,6 +48,7 @@ function Layout(props) {
               <Route path="/app/profile" component={Profile}/>
               <Route path="/app/contacts" component={Contacts}/>
               <Route path="/app/chat" component={Chat}/>
+              <Route path="/app/settings" component={Settings} />
 
             </Switch>
           </div>

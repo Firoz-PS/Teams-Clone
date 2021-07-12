@@ -1,6 +1,5 @@
 import React from "react";
 import { useContext, useEffect, useState, useRef } from "react";
-// import { SocketContext } from "../../context/CallContext"
 import {
   Grid,
   Paper,
@@ -22,16 +21,26 @@ import {
   VideocamOff,
   CallEnd,
   Chat,
+  Cancel
 } from "@material-ui/icons";
 import { socket } from "../../context/AuthContext";
 import { useDispatch, useSelector } from "react-redux";
-import { acceptJoinRequest, rejectJoinRequest, removeMeFromParticipants } from "../../redux/actions/CallActions";
+import {
+  acceptJoinRequest,
+  rejectJoinRequest,
+  removeMeFromParticipants,
+} from "../../redux/actions/CallActions";
 import Peer from "simple-peer";
 import { useHistory } from "react-router-dom";
 import UserContext from "../../context/AuthContext";
 
 // styles
 import useStyles from "./styles";
+import { Card } from "@material-ui/core";
+import { CardHeader } from "@material-ui/core";
+import { CardContent } from "@material-ui/core";
+import { Divider } from "@material-ui/core";
+import ChatBox from "../ChatComponents/ChatBox";
 
 const LiveCall = () => {
   const classes = useStyles();
@@ -57,8 +66,8 @@ const LiveCall = () => {
     return <Slide direction="up" ref={ref} {...props} />;
   });
 
-  const handleDrawerOpen = () => {
-    setDrawerOpen(true);
+  const toggleDrawerOpen = () => {
+    setDrawerOpen(!drawerOpen);
   };
 
   const handleDrawerClose = () => {
@@ -82,115 +91,101 @@ const LiveCall = () => {
         setStream(currentStream);
 
         myVideo.current.srcObject = currentStream;
-
       });
 
     socket.on("callUser", ({ from, myName, signal, myUserId }) => {
       setCall({ isReceivingCall: true, from, myName, signal, myUserId });
     });
-    {
-      CallList[0].participants[1] && 
-        callUser(CallList[0].participants[0].userSocketId);
-    }
-
+    // {
+    //   CallList[0].participants[1] &&
+    //     callUser(CallList[0].participants[0].userSocketId);
+    // }
   }, []);
+
+  useEffect(() => {
+
+    if(CallList[0].participants[1]){
+      callUser(CallList[0].participants[0].userSocketId);
+    }
+  }, [stream])
 
   const rejectCall = () => {
     setCallRejected(true);
 
-    socket.emit("rejectCall", {to: call.from})
-  }
+    socket.emit("rejectCall", { to: call.from });
+  };
   const answerCall = () => {
     setCallAccepted(true);
-    console.log(stream)
-      const peer = new Peer({ initiator: false, trickle: false, stream });
-    console.log("peer", peer)
+    const peer = new Peer({ initiator: false, trickle: false, stream });
 
     peer.on("signal", (data) => {
-      console.log("data",data)
       socket.emit("answerCall", {
         signal: data,
         to: call.from,
         myName: `${user.firstName} ${user.lastName}`,
       });
     });
-      
-      peer.on("stream", (currentStream) => {
-        console.log("streaming");
-        userVideo.current.srcObject = currentStream;
-      });
+
+    peer.on("stream", (currentStream) => {
+      userVideo.current.srcObject = currentStream;
+    });
 
     peer.signal(call.signal);
 
     connectionRef.current = peer;
-    
   };
 
   const callUser = (id) => {
-
-    console.log(stream)
     const peer = new Peer({ initiator: true, trickle: false, stream });
-      console.log("peer", peer)
 
-  
-      peer.on("signal", (data) => {
-        console.log("data",data)
-        socket.emit("callUser", {
-          userToCall: id,
-          signalData: data,
-          from: socket.id,
-          myName: `${user.firstName} ${user.lastName}`,
-          myUserId: user.id
-        });
+    peer.on("signal", (data) => {
+      socket.emit("callUser", {
+        userToCall: id,
+        signalData: data,
+        from: socket.id,
+        myName: `${user.firstName} ${user.lastName}`,
+        myUserId: user.id,
       });
-        
-        peer.on("stream", (currentStream) => {
-          console.log("streaming");
-          userVideo.current.srcObject = currentStream;
-        });
-  
-      socket.on("callAccepted", ({ signal, myName }) => {
-        setCallAccepted(true);
-        setUserName(myName);
-        peer.signal(signal);
-      });
-  
-      socket.on("callRejected", () => {
-        setCallAccepted(true);
-        dispatch(
-          removeMeFromParticipants(user.id)
-          .then(
-            console.log(CallList)
-          )
-        )
-      });
-  
-      connectionRef.current = peer;
-    
+    });
+
+    peer.on("stream", (currentStream) => {
+      userVideo.current.srcObject = currentStream;
+    });
+
+    socket.on("callAccepted", ({ signal, myName }) => {
+      setCallAccepted(true);
+      setUserName(myName);
+      peer.signal(signal);
+    });
+
+    socket.on("callRejected", () => {
+      setCallAccepted(true);
+      dispatch(removeMeFromParticipants(user.id)
+      .then(console.log(CallList)));
+    });
+
+    connectionRef.current = peer;
   };
 
   const leaveCall = () => {
     setCallEnded(true);
 
-    connectionRef.current.destroy();
+    {connectionRef.ref && connectionRef.current.destroy();
+    }
     history.push("/app/call/");
-    window.location.reload();
   };
 
   const handleDisagree = () => {
-    dispatch(
-      rejectJoinRequest(CallList[0]._id , call.myUserId)
-    ).then(() =>{
+    dispatch(rejectJoinRequest(CallList[0]._id, call.myUserId)).then(() => {
       rejectCall();
-    })
+      console.log(CallList);
+    });
   };
 
   const handleAgree = () => {
-    dispatch(
-      acceptJoinRequest(CallList[0]._id , call.myUserId)
-    ).then(() => {
+    dispatch(acceptJoinRequest(CallList[0]._id, call.myUserId)).then(() => {
       answerCall();
-      console.log(CallList)
+      console.log(CallList);
     });
   };
 
@@ -247,7 +242,8 @@ const LiveCall = () => {
               <DialogTitle>{"Accept or Reject join request"}</DialogTitle>
               <DialogContent>
                 <DialogContentText>
-                  {call.myName} wants to join this call. Do you want to accept this request
+                  {call.myName} wants to join this call. Do you want to accept
+                  this request
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
@@ -271,16 +267,19 @@ const LiveCall = () => {
               <IconButton onClick={leaveCall} color="secondary">
                 <CallEnd />
               </IconButton>
-              <IconButton onClick={handleDrawerOpen}>
+              <IconButton onClick={toggleDrawerOpen}>
                 <Chat />
               </IconButton>
             </Paper>
           </Grid>
         </Grid>
       </Grid>
-      <Grid item xs={3}>
-        <Paper className={classes.chatDrawer}>dhdhj</Paper>
+      {drawerOpen && 
+        <Grid item xs={3}>
+          <ChatBox />
       </Grid>
+      }
+
     </>
   );
 };

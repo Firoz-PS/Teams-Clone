@@ -38,7 +38,7 @@ const UpdateAvatar = () => {
         />
         <Divider />
         <CardContent className={classes.detailsCard}>
-        <UserAvatar firstName={user.firstName} lastName={user.lastName} size={`90px`} />
+        <UserAvatar name={`${user.firstName} ${user.lastName}`} size={`90px`} />
         <Typography
           color="textPrimary"
           gutterBottom

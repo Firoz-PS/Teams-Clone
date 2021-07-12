@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/styles";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   callPanel: {
     height: "90%",
@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
     borderRadius: theme.shape.borderRadius
   },
   chatDrawer: {
-    height: "82vh"
+    maxHeight: "100%"
   },
   nameOnVideo: {
       position: "absolute",
@@ -36,7 +36,13 @@ const useStyles = makeStyles(theme => ({
       borderRadius: "4px 0 4px 0",
       padding: "0 4px"
 
-  }
+  },
+  // root: {
+  //   width: '100%',
+  // },
+  container: {
+    maxHeight: 440,
+  },
 }));
 
 export default useStyles;

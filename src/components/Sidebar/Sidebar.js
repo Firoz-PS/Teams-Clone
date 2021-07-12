@@ -1,18 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Drawer, IconButton, List } from "@material-ui/core";
 import {
-  Home as HomeIcon,
-  NotificationsNone as NotificationsIcon,
   VideoCall as CallIcon,
-  FilterNone as UIElementsIcon,
-  BorderAll as TableIcon,
-  QuestionAnswer as SupportIcon,
-  LibraryBooks as LibraryIcon,
-  HelpOutline as FAQIcon,
   ArrowBack as ArrowBackIcon,
   Message as ChatIcon,
-  Poll as PollIcon,
-  ColorLens as CustomizationIcon,
   Settings as SettingsIcon,
   Person as ProfileIcon,
   Contacts as ContactsIcon,
@@ -25,7 +16,7 @@ import classNames from "classnames";
 import useStyles from "./styles";
 
 // components
-import SidebarLink from "./components/SidebarLink/SidebarLink";
+import SidebarLink from "./SidebarLink";
 
 // context
 import {
@@ -54,40 +45,19 @@ const structure = [
     icon: <ProfileIcon />,
   },
   {
-    id: 9,
+    id: 3,
     label: "contacts",
     link: "/app/contacts",
     icon: <ContactsIcon />,
   },
   {
-    id: 3,
-    label: "Customizations",
-    link: "",
-    icon: <CustomizationIcon />,
-  },
-  {
     id: 4,
     label: "Settings",
-    link: "",
+    link: "/app/settings",
     icon: <SettingsIcon />,
   },
   { 
     id: 5,
-    type: "divider" 
-  },
-  { 
-    id: 6, 
-    type: "title", 
-    label: "EVENTS" 
-  },
-  { 
-    id: 7, 
-    label: "Poll", 
-    link: "", 
-    icon: <PollIcon /> 
-  },
-  { 
-    id: 8, 
     type: "divider" 
   }
 ];

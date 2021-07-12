@@ -15,28 +15,15 @@ export default makeStyles(theme => ({
     height: "75vh",
     position: "relative"  
   },
-  userDetailsCard: {
-    height: "75vh",
-    position: "relative",
+  detailsCard: {
+    alignItems: 'center',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    height: '320px'
   },
   newChatButton: {
     position: "absolute",
     right: theme.spacing(2),
     bottom: theme.spacing(2)  
-  },
-  searchField: {
-    marginLeft: theme.spacing(1)
-  },
-  searchInput: {
-    display: "flex",
-    width: "100%"
-  },
-  divider: {
-    height: 30,
-    marginTop: 7,
-    marginBottom: 3
-  } 
+  }  
 }));

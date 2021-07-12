@@ -16,7 +16,10 @@ import {
   Divider,
   TextField,
   ListItemSecondaryAction,
-  Button
+  Button,
+  Paper,
+  InputBase,
+  IconButton
 } from "@material-ui/core";
 import { 
     PersonAdd as PersonAddIcon,
@@ -28,7 +31,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchContactInfo,
   addContact,
-  addInviteSent,
+  addInvite,
+  // ViewContactDetails,
 } from "../../redux/actions/ContactActions";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -36,6 +40,8 @@ import UserContext from "../../context/AuthContext";
 
 // styles
 import useStyles from "./styles";
+
+import UserAvatar from "../UserAvatar/UserAvatar";
 
 // const contacts = [
 //     {
@@ -148,7 +154,7 @@ import useStyles from "./styles";
 const ViewContacts = () => {
   var classes = useStyles();
   const dispatch = useDispatch();
-  const { user, searchUser, searchResult } = useContext(UserContext);
+  const { user, searchUser, searchResult, ViewUserDetails } = useContext(UserContext);
   const { Contacts } = useSelector((state) => state.contacts);
   const [isLoading, setIsLoading] = useState(null);
   const [searchValue, setSearchValue] = useState("");
@@ -161,8 +167,8 @@ const ViewContacts = () => {
     });
   }, []);
 
-  const viewDetails = () => {
-    console.log("viewDetails");
+  const viewDetails = (userId) => {
+    ViewUserDetails(userId)
   };
 
   const handleSearch = (event) => {
@@ -194,17 +200,22 @@ const handleCancelSearch = (e) => {
         <CardHeader 
         title={!isSearching && "Contacts"} 
         action={isSearching &&
-            <div>
-            <TextField 
-            id="standard-basic" 
-            label="Standard"
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            onKeyUp={handleSearch}
-            />
-            <CancelIcon onClick={handleCancelSearch} />
-            <SearchIcon onClick={handleSearch} />
-            </div>
+            <Paper className={classes.searchInput}>
+        <InputBase 
+        placeholder="search here ..."
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+        onKeyUp={handleSearch}
+        className={classes.searchField}
+        />
+      <IconButton color="primary" aria-label="search" onClick={handleSearch}>
+        <SearchIcon />
+      </IconButton>
+      <Divider className={classes.divider} orientation="vertical" />
+      <IconButton color="primary" aria-label="cancel" onClick={handleCancelSearch}>
+      <CancelIcon />
+    </IconButton>
+        </Paper>
         } />
         <Divider />
         <CardContent className={classes.content}>
@@ -215,9 +226,9 @@ const handleCancelSearch = (e) => {
                 !isSearching &&
                 Contacts[0] &&
                 Contacts.map((contact) => (
-                  <ListItem button key={contact.id} onClick={viewDetails}>
+                  <ListItem button key={contact.id} onClick={() => viewDetails(contact.userId)}>
                     <ListItemAvatar>
-                      <Avatar src={contact.avatar}></Avatar>
+                    <UserAvatar name={contact.userName} size={`40px`} />
                     </ListItemAvatar>
                     <ListItemText primary={contact.userName} />
                   </ListItem>
@@ -226,9 +237,9 @@ const handleCancelSearch = (e) => {
                   isSearching &&
                   searchResult[0] &&
                   searchResult.map((item) => (
-                    <ListItem button key={item._id} onClick={viewDetails}>
+                    <ListItem button key={item._id} onClick={() => viewDetails(item.userId)}>
                       <ListItemAvatar>
-                        <Avatar src={item.avatar}></Avatar>
+                      <UserAvatar name={item.userName} size={`40px`} />
                       </ListItemAvatar>
                       <ListItemText primary={item.userName} />
                       {!item.isUserAContact &&                      
@@ -241,11 +252,13 @@ const handleCancelSearch = (e) => {
                         className={classes.button}
                         startIcon={<AddIcon />}
                         onClick={() => {
-                          dispatch(addInviteSent(
+                          dispatch(addInvite(
                             user.contactInfosId,
                             item.userId,
                             item.userName,
-                            item.avatar
+                            item.avatar,
+                            `${user.firstName} ${user.lastName}`,
+                            user.avatar
                             ))
                         }                         
                         }

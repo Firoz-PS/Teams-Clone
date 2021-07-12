@@ -12,7 +12,8 @@ import {
   Typography,
   Avatar,
   IconButton,
-  Input
+  Input,
+  CircularProgress
 } from '@material-ui/core';
 import {
   Edit as EditIcon ,
@@ -21,13 +22,20 @@ import {
 // contexts
 import UserContext from "../../context/AuthContext";
 
+import { useDispatch, useSelector } from "react-redux";
+
 // styles
 import useStyles from "./styles";
 import UserAvatar from '../UserAvatar/UserAvatar';
+import { removeContact } from '../../redux/actions/ContactActions';
 
 const ViewContactDetails = () => {
   const classes = useStyles()
-  const { user } = useContext(UserContext)
+  const { user, viewUser } = useContext(UserContext)
+  const dispatch = useDispatch();
+  const { ContactToView } = useSelector((state) => state.contacts);
+  const [isLoading, setIsLoading] = useState(null);
+
 
   return (
       <Card>
@@ -36,52 +44,66 @@ const ViewContactDetails = () => {
         />
         <Divider />
         <CardContent className={classes.userDetailsCard}>
-        <UserAvatar firstName={user.firstName} lastName={user.lastName} size={`90px`} />
-        <Typography
-          color="textPrimary"
-          gutterBottom
-          variant="h3"
-        >
-          {`${user.firstName} ${user.lastName}`} 
-        </Typography>
-        <Typography
+        {!viewUser.id && 
+          <Typography>Select a contact to view details </Typography>
+        }
+        {viewUser.id && 
+          <div>
+          <UserAvatar name={`${viewUser.firstName} ${viewUser.lastName}`} size={`90px`} />
+          <Typography
+            color="textPrimary"
+            gutterBottom
+            variant="h3"
+          >
+            {`${viewUser.firstName} ${viewUser.lastName}`} 
+          </Typography>
+          <Typography
+            color="textSecondary"
+            variant="body1"
+            gutterBottom
+          >
+            Email : {viewUser.email}
+          </Typography>
+          <Typography
+            color="textSecondary"
+            variant="body1"
+            gutterBottom
+          >
+            Phone Number: {viewUser.phoneNo}
+          </Typography>
+          <Typography
           color="textSecondary"
           variant="body1"
           gutterBottom
         >
-          Email : {user.email}
-        </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body1"
-          gutterBottom
-        >
-          Phone Number: {user.phoneNo}
+          Organization : {viewUser.organization}
         </Typography>
         <Typography
         color="textSecondary"
         variant="body1"
         gutterBottom
       >
-        Organization : {user.organization}
+        Date of Birth : {viewUser.dateOfBirth}
       </Typography>
-      <Typography
-      color="textSecondary"
-      variant="body1"
-      gutterBottom
-    >
-      Date of Birth : {user.dateOfBirth}
-    </Typography>
-    <Divider />
-        <CardActions>
-        <Button
-          color="secondary"
-          type="submit"
-          variant="contained"
-        >
-        Remove from contacts
-        </Button>
-        </CardActions>
+      <Divider />
+          <CardActions>
+          <Button
+            color="secondary"
+            type="submit"
+            variant="contained"
+            onClick={() => {
+              dispatch(removeContact(
+                user.contactInfosId,
+                viewUser.id,
+                ))
+            }                         
+            }          
+            >
+          Remove from contacts
+          </Button>
+          </CardActions>
+          </div>
+        }
         </CardContent>      
       </Card>
   );

@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react';
-import {List, ListItem , ListItemAvatar, ListItemText, Avatar, Badge, Card, AppBar, Typography, Fab, CardContent, CardHeader, Divider, Tabs, Tab} from '@material-ui/core';
+import {IconButton, ListItemSecondaryAction, Button, CircularProgress, List, ListItem , ListItemAvatar, ListItemText, Avatar, Badge, Card, AppBar, Typography, Fab, CardContent, CardHeader, Divider, Tabs, Tab} from '@material-ui/core';
 
 import "react-perfect-scrollbar/dist/css/styles.css";
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -10,7 +10,16 @@ import {
   removeInviteSent,
   removeInviteReceived
 } from "../../redux/actions/ContactActions";
+
+import {
+    CheckCircleOutlineRounded as CheckIcon,
+    CancelOutlined as CancelIconOutlined, 
+    Cancel as CancelIcon 
+} from "@material-ui/icons";
+
 import UserContext from "../../context/AuthContext";
+
+import UserAvatar from "../UserAvatar/UserAvatar";
 
 
 // styles
@@ -117,13 +126,16 @@ const invitesSent = [
 const ManageInvites = () => {
     var classes = useStyles();
     const dispatch = useDispatch();
-    const { user, searchUser, searchResult } = useContext(UserContext);
+    const { user, searchUser, searchResult, ViewUserDetails } = useContext(UserContext);
     const { InvitesSent, InvitesReceived } = useSelector((state) => state.contacts);
     const [isLoading, setIsLoading] = useState(null);
     const [searchValue, setSearchValue] = useState("");
     const [isSearching, setIsSearching] = useState(false);
     const [activeTabId, setActiveTabId] = useState(0);
 
+    const viewDetails = (userId) => {
+        ViewUserDetails(userId)
+    }; 
 
     return (
         <Card >
@@ -145,39 +157,89 @@ const ManageInvites = () => {
           {activeTabId === 0 && (
             <PerfectScrollbar>
             <List>
-            {invitesReceived.map((item) => (
-                <ListItem button key={item.id}>
-                <ListItemAvatar>
-                    <Avatar src={item.avatar}>
-                    </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={item.name}
-                />
-              </ListItem>
-            ))}
-            <Divider />
-            <ListItem />  
+            {!InvitesReceived[0] && 
+                <Typography>No invites received </Typography>
+              }
+            {InvitesReceived[0] &&
+                InvitesReceived.map((item) => (
+                  <ListItem button key={item._id} onClick={() => viewDetails(item.userId)}>
+                    <ListItemAvatar>
+                    <UserAvatar name={item.userName} size={`40px`} />
+                    </ListItemAvatar>
+                    <ListItemText primary={item.userName} />
+                      <ListItemSecondaryAction>
+                      <IconButton
+                      variant="contained"
+                      color="primary"
+                      edge="end"
+                      onClick={() => {
+                        dispatch(addContact(
+                          user.contactInfosId,
+                          item.userId,
+                          item.userName,
+                          item.userAvatar,
+                          `${user.firstName} ${user.lastName}`,
+                          user.avatar
+                          ))
+                      }                         
+                      }
+                      >
+                      <CheckIcon />
+                      </IconButton>
+                      <IconButton
+                      variant="contained"
+                      color="secondary"
+                      edge="end"
+                      onClick={() => {
+                        dispatch(removeInviteReceived(
+                          user.contactInfosId,
+                          item.userId,
+                          ))
+                      }                         
+                      }
+                      >
+                      <CancelIconOutlined />
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                ))}
             </List>             
             </PerfectScrollbar>
           )}
           {activeTabId === 1 && (
             <PerfectScrollbar>
             <List>
-            {invitesSent.map((item) => (
-                <ListItem button key={item.id}>
-                <ListItemAvatar>
-                    <Avatar src={item.avatar}>
-                    {item.mood}
-                    </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={item.name}
-                />
-              </ListItem>
-            ))}
-            <Divider />
-            <ListItem />  
+            {!InvitesSent[0] && 
+                <Typography>No invites sent </Typography>
+              }
+            {InvitesSent[0] &&
+                InvitesSent.map((item) => (
+                  <ListItem button key={item._id} onClick={() => viewDetails(item.userId)}>
+                    <ListItemAvatar>
+                    <UserAvatar name={item.userName} size={`40px`} />
+                    </ListItemAvatar>
+                    <ListItemText primary={item.userName} />
+                      <ListItemSecondaryAction>
+                      <Button
+                      variant="contained"
+                      color="secondary"
+                      edge="end"
+                      size="small"
+                      className={classes.button}
+                      startIcon={<CancelIcon />}
+                      onClick={() => {
+                        dispatch(removeInviteSent(
+                          user.contactInfosId,
+                          item.userId,
+                          ))
+                      }                         
+                      }
+                    >
+                      CANCEL
+                    </Button>
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                ))}
             </List>             
             </PerfectScrollbar>
           )} 

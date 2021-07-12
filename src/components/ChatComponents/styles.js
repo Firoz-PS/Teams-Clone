@@ -36,7 +36,11 @@ export default makeStyles(theme => ({
     color: "white"
   },
   theirMessageCard: {
-    backgroundColor: theme.palette.paper,
+    backgroundColor: theme.palette.secondary.light,
     padding: theme.spacing(1)
-  } 
+  },
+  sendMessageField: {
+    marginLeft: theme.spacing(1),
+  }
+
 }));

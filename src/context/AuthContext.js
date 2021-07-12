@@ -2,17 +2,19 @@ import React, { createContext, useEffect, useReducer } from 'react'
 import jwtDecode from 'jwt-decode'
 import axios from 'axios'
 import { io } from 'socket.io-client';
+import { useHistory } from 'react-router';
 
 
 const API_URL = "http://localhost:5000";
 export const socket = io(API_URL);
 
-
+// const history = useHistory()
 const initialState = {
     isAuthenticated: false,
     isInitialised: false,
     user: null,
-    searchResult: []
+    searchResult: [],
+    viewUser: []
 }
 
 const isValidToken = (accessToken) => {
@@ -71,6 +73,14 @@ const userReducer = (state, action) => {
                 searchResult
             }
         }
+        case 'VIEW_USER': {
+            state.viewUser = action.payload.user
+            console.log(state.viewUser)
+            return {
+                ...state,
+            }
+        }
+        
         case 'USER_SIGN_OUT': {
             return {
                 ...state,
@@ -83,6 +93,17 @@ const userReducer = (state, action) => {
             return {
                 ...state,
                 user,
+            }
+            
+        }
+        case 'UPDATE_PASSWORD': {
+            return {
+                ...state,
+            }
+        }
+        case 'DELETE_ACCOUNT': {
+            return {
+                ...state,
             }
         }
         case 'UPDATE_AVATAR': {
@@ -103,7 +124,10 @@ const UserContext = createContext({
     userSignUp: () => {},
     updateAvatar: () => {},
     searchUser: () => {},
-    updateBasicDetails: () => {}
+    updateBasicDetails: () => {},
+    ViewUserDetails: () => {},
+    updatePassword: () => {},
+    deleteAccount: () => {}
 })
 
 export const UserProvider = ({ children }) => {
@@ -163,7 +187,6 @@ const userSignIn = async (email, password, history, setIsLoading, setError) => {
             user
         },
     })
-    history.push('/app/call')
 }
 
 const userSignUp = async (firstName, lastName, email, password, history, setIsLoading, setError) => {
@@ -203,6 +226,27 @@ const updateBasicDetails = async (values) => {
     return Promise.resolve();
 }
 
+const updatePassword = async (oldPassword, newPassword) => {
+    const res = await axios.put(API_URL + '/api/user/update/PASSWORD', {
+        oldPassword,
+        newPassword
+    })
+    dispatch({
+        type: 'UPDATE_PASSWORD',
+    })
+    return Promise.resolve();
+}
+
+const deleteAccount = async (password) => {
+    const res = await axios.put(API_URL + '/api/user/delete', {
+        password
+    })
+    dispatch({
+        type: 'DELETE_ACCOUNT',
+    })
+    return Promise.resolve();
+}
+
 const searchUser = async (searchValue, contactInfosId) => {
     const res = await axios.put(API_URL + '/api/user/search', {
         searchValue,
@@ -215,6 +259,15 @@ const searchUser = async (searchValue, contactInfosId) => {
             searchResult
         },
     })
+    return Promise.resolve();
+}
+
+const ViewUserDetails = async (userId) => {
+    const res = await axios.get(API_URL + `/api/user/details/${userId}`)
+        dispatch({
+            type: 'VIEW_USER',
+            payload: res.data
+        })
     return Promise.resolve();
 }
 
@@ -247,7 +300,10 @@ return (
             userSignUp,
             updateAvatar,
             searchUser,
-            updateBasicDetails
+            updateBasicDetails,
+            ViewUserDetails,
+            updatePassword,
+            deleteAccount
         }}
     >
         {children}

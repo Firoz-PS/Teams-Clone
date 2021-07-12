@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
 import {
-  IconButton,
   Icon,
   Divider,
   TextField,
@@ -8,7 +7,7 @@ import {
   Card,
   CardHeader,
   CardContent,
-  Fab,
+  IconButton,
   Typography,
   Badge,
   CircularProgress
@@ -26,6 +25,11 @@ import { socket } from "../../context/AuthContext";
 
 // styles
 import useStyles from "./styles";
+import { Paper } from "@material-ui/core";
+import { InputBase } from "@material-ui/core";
+
+import UserAvatar from "../UserAvatar/UserAvatar";
+
 
 const ChatBox = () => {
   var classes = useStyles();
@@ -46,25 +50,25 @@ const ChatBox = () => {
         dispatch(fetchChatDetails(SelectedContact[0].chatId))
         .then(() => {
           setIsLoading(false);
+          scrollToBottom();
         });
     }
+
   }, [SelectedContact[0]]);
   
-
+useEffect(() => {
+  socket.on("updateChat", () => {
+    {SelectedContact[0] && dispatch(fetchChatDetails(SelectedContact[0].chatId)) }   
+});
+})
   const sendMessageOnEnter = (event) => {
       console.log( event.type)
-      if(event.key === "Enter" || event.type === "click" && !event.shiftKey){
+      if(event.key === "Enter" || event.type === "click" && !event.shiftKey && message !== ""){
                 dispatch(sendMessage(SelectedContact[0].chatId, `${user.firstName} ${user.lastName}`, message.trim()))
                 socket.emit("messageSent")
           setMessage("");
       }
   };
-
-  console.log(SelectedContact)
-  socket.on("updateChat", () => {
-      console.log("here")
-    dispatch(fetchChatDetails(SelectedContact[0].chatId))
-});
 
   const scrollToBottom = useCallback(() => {
     if (chatBottomRef) {
@@ -82,10 +86,8 @@ const ChatBox = () => {
   return (
       <Card className={classes.cardBody} fullWidth>
       <CardHeader
-        avatar={
-          <Avatar src={SelectedContact[0] && SelectedContact[0].avatar}>
-            OU
-          </Avatar>
+        avatar={SelectedContact[0] && 
+          <UserAvatar name={SelectedContact[0].userName} size={`40px`} />
         }
         action={
           <IconButton aria-label="settings">
@@ -136,21 +138,24 @@ const ChatBox = () => {
               </div>
             ))}
         </PerfectScrollbar>
-        <div className={classes.input}>
-          <TextField
-            variant="outlined"
-            label="Type here ..."
-            multiline
-            rowsMax={4}
-            fullWidth
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyUp={sendMessageOnEnter}
-          />
-          <Fab color="primary" aria-label="send" onClick={sendMessageOnEnter}>
-            <SendIcon />
-          </Fab>
-        </div>
+        <Divider/>
+        {SelectedContact[0] && <Paper className={classes.input}>
+        <InputBase 
+        placeholder="Type here ..."
+        multiline
+        rowsMax={4}
+        fullWidth
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        onKeyUp={sendMessageOnEnter}
+        className={classes.sendMessageField}
+        />
+      <IconButton color="primary" aria-label="send" onClick={sendMessageOnEnter}>
+        <SendIcon />
+      </IconButton>
+        </Paper>
+      }
+        
       </CardContent>
     </Card>
   );

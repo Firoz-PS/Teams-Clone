@@ -8,23 +8,23 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { LayoutProvider } from "./context/LayoutContext";
 import { UserProvider } from "./context/AuthContext";
-import { CallProvider } from "./context/CallContext";
-import { Store } from './redux/Store'
-import { Provider } from 'react-redux'
-
-
+import { Store } from "./redux/Store";
+import { Provider } from "react-redux";
+import { SnackbarProvider } from "notistack";
 
 ReactDOM.render(
-  <LayoutProvider>
+  <SnackbarProvider maxSnack={3}>
     <UserProvider>
-      <ThemeProvider theme={Themes.default}>
-      <Provider store={Store}>
-          <CssBaseline />
-          <App />
+      <LayoutProvider>
+        <ThemeProvider theme={Themes.default}>
+          <Provider store={Store}>
+            <CssBaseline />
+            <App />
           </Provider>
-      </ThemeProvider>
+        </ThemeProvider>
+      </LayoutProvider>
     </UserProvider>
-  </LayoutProvider>,
+  </SnackbarProvider>,
   document.getElementById("root"),
 );
 

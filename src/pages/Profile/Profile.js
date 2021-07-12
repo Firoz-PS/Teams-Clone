@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid } from "@material-ui/core";
-import UpdateDetails from '../../components/EditProfile/UpdateDetails';
-import UpdateAvatar from '../../components/EditProfile/UpdateAvatar';
+import UpdateDetails from '../../components/ProfileComponents/UpdateDetails';
+import UpdateAvatar from '../../components/ProfileComponents/UpdateAvatar';
 
 export default function Profile() {
     return (

@@ -1,6 +1,5 @@
 import React from "react";
 import { useState, useContext, useEffect } from "react";
-// import { SocketContext } from "../../context/CallContext";
 import UserContext from "../../context/AuthContext";
 import { useHistory } from "react-router-dom";
 import {
@@ -55,16 +54,9 @@ export default function CallStarter({
       joinCall(`${user.firstName} ${user.lastName}`, callId, socket.id),
     ).then(() => {
       console.log(CallList);
-      // callUser(CallList[0].participants[0].userSocketId)
       history.push(`/app/call/${callId}`);
     });
   };
-
-  // const joinCall = () => {
-  //   callUser(callId)
-  //   console.log(callId)
-  //   history.push(`/app/call/${callId}`);
-  // }
 
   return (
     <>

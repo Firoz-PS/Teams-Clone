@@ -15,6 +15,8 @@ import UserContext from "../../context/AuthContext";
 // styles
 import useStyles from "./styles";
 
+import UserAvatar from "../UserAvatar/UserAvatar";
+
 // const contacts = [
 //     {
 //         id: '323sa680b3249760ea21rt47',
@@ -147,9 +149,7 @@ const ChatContacts = () => {
         <Card >
         <CardHeader
         avatar={
-          <Avatar aria-label="recipe" >
-            FP
-          </Avatar>
+          <UserAvatar name={`${user.firstName} ${user.lastName}`} size={`40px`} />
         }
         title={`${user.firstName} ${user.lastName}`}
         className={classes.header}
@@ -164,7 +164,7 @@ const ChatContacts = () => {
                 Contacts.map((contact) => (
                   <ListItem button key={contact._id} onClick={() => selectContactHandler(contact._id)} >
                     <ListItemAvatar>
-                      <Avatar src={contact.avatar}></Avatar>
+                    <UserAvatar name={contact.userName} size={`40px`} />
                     </ListItemAvatar>
                     <ListItemText primary={contact.userName} />
                   </ListItem>

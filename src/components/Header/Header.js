@@ -8,6 +8,8 @@ import {
   MenuItem,
   Fab,
   Link,
+  Typography,
+  Badge
 } from "@material-ui/core";
 import {
   Menu as MenuIcon,
@@ -23,7 +25,6 @@ import classNames from "classnames";
 import useStyles from "./styles";
 
 // components
-import { Badge, Typography, Button } from "../Wrappers/Wrappers";
 import UserAvatar from "../UserAvatar/UserAvatar";
 
 // context
@@ -188,7 +189,7 @@ export default function Header(props) {
           {messages.map((message) => (
             <MenuItem key={message.id} className={classes.messageNotification}>
               <div className={classes.messageNotificationSide}>
-                <UserAvatar color={message.variant} firstName={user.firstName} lastName={user.lastName}/>
+                <UserAvatar color={message.variant} name={`${user.firstName} ${user.lastName}`}/>
                 <Typography size="sm" color="text" colorBrightness="secondary">
                   {message.time}
                 </Typography>

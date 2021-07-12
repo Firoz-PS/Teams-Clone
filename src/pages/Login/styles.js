@@ -66,20 +66,6 @@ export default makeStyles(theme => ({
     textAlign: "center",
     marginTop: theme.spacing(2),
   },
-  googleButton: {
-    marginTop: theme.spacing(6),
-    boxShadow: theme.customShadows.widget,
-    backgroundColor: "white",
-    width: "100%",
-    textTransform: "none",
-  },
-  googleButtonCreating: {
-    marginTop: 0,
-  },
-  googleIcon: {
-    width: 30,
-    marginRight: theme.spacing(2),
-  },
   creatingButtonContainer: {
     marginTop: theme.spacing(2.5),
     height: 46,
@@ -129,13 +115,11 @@ export default makeStyles(theme => ({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    justifyContent: "center",
   },
   forgetButton: {
     textTransform: "none",
     fontWeight: 400,
-  },
-  loginLoader: {
-    marginLeft: theme.spacing(4),
   },
   copyright: {
     marginTop: theme.spacing(4),
