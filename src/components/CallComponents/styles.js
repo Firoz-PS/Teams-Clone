@@ -17,7 +17,11 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     position: "absolute",
     bottom: theme.spacing(1),
-    flexGrow: 1
+    flexGrow: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingLeft: "33vw",
+    paddingRight: "31vw"
   },
   video: {
     maxHeight: "100%",

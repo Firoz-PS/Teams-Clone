@@ -5,7 +5,6 @@ import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
 import Layout from "./components/Layout/Layout";
 
 // pages
-import Error from "./pages/error/Error";
 import Login from "./pages/Login/Login";
 
 // context
@@ -27,12 +26,10 @@ export default function App() {
         />
         <PrivateRoute path="/app" component={Layout} />
         <PublicRoute path="/login" component={Login} />
-        <Route component={Error} />
       </Switch>
     </HashRouter>
   );
 
-  // #######################################################################
 
   function PrivateRoute({ component, ...rest }) {
     return (

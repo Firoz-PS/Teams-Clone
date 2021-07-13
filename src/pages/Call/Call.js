@@ -32,9 +32,6 @@ const Call = ({isCallActive}) => {
     {!isCallActive && 
       <>
       <CallStarter />
-      <Grid item xs={12}>
-      <PreviousCalls />
-      </Grid>
       </>
     }    
   </Grid>

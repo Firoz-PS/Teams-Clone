@@ -89,23 +89,24 @@ useEffect(() => {
         avatar={SelectedContact[0] && 
           <UserAvatar name={SelectedContact[0].userName} size={`40px`} />
         }
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
+        // action={
+        //   <IconButton aria-label="settings">
+        //     <MoreVertIcon />
+        //   </IconButton>
+        // }
         title={SelectedContact[0] && SelectedContact[0].userName}
         className={classes.header}
       />
       <Divider />
       <CardContent className={classes.chatBoxContent}>
+      <div className={classes.messagesContainer}>
         <PerfectScrollbar id="chat-scroll">
           {!SelectedContact[0] && (
-            <Typography>Select a contact to start chatting </Typography>
+            <Typography align="center">Select a contact to start chatting </Typography>
           )}
           {SelectedContact[0] && isLoading && <CircularProgress size={60} />}
           {SelectedContact[0] && !isLoading && !ChatContent[0] && (
-            <Typography>
+            <Typography align="center">
               start chatting with {SelectedContact[0].userName}
             </Typography>
           )}
@@ -121,7 +122,6 @@ useEffect(() => {
                 }
               >
                 <div>
-                  <Typography variant="subtitle2">{item.userName}</Typography>
                   <Card
                     className={
                       user.id == item.userId
@@ -131,13 +131,11 @@ useEffect(() => {
                   >
                     {item.text}
                   </Card>
-                  <Typography variant="caption" gutterBottom>
-                    1 minute ago
-                  </Typography>
                 </div>
               </div>
             ))}
         </PerfectScrollbar>
+        </div>
         <Divider/>
         {SelectedContact[0] && <Paper className={classes.input}>
         <InputBase 

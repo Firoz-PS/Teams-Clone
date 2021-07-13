@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {IconButton, ListItemSecondaryAction, Button, CircularProgress, List, ListItem , ListItemAvatar, ListItemText, Avatar, Badge, Card, AppBar, Typography, Fab, CardContent, CardHeader, Divider, Tabs, Tab} from '@material-ui/core';
 
 import "react-perfect-scrollbar/dist/css/styles.css";
@@ -8,7 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addContact,
   removeInviteSent,
-  removeInviteReceived
+  removeInviteReceived,
+  fetchContactInfo
 } from "../../redux/actions/ContactActions";
 
 import {
@@ -21,6 +22,7 @@ import UserContext from "../../context/AuthContext";
 
 import UserAvatar from "../UserAvatar/UserAvatar";
 
+import { socket } from "../../context/AuthContext";
 
 // styles
 import useStyles from "./styles";
@@ -137,6 +139,15 @@ const ManageInvites = () => {
         ViewUserDetails(userId)
     }; 
 
+    useEffect(() => {
+        socket.on("updateContact", () => {
+          setIsLoading(true);
+          dispatch(fetchContactInfo(user.contactInfosId)).then(() => {
+            setIsLoading(false);
+          });
+        });
+      });
+
     return (
         <Card >
         <CardHeader
@@ -158,7 +169,7 @@ const ManageInvites = () => {
             <PerfectScrollbar>
             <List>
             {!InvitesReceived[0] && 
-                <Typography>No invites received </Typography>
+                <Typography align="center">No invites received </Typography>
               }
             {InvitesReceived[0] &&
                 InvitesReceived.map((item) => (
@@ -179,8 +190,10 @@ const ManageInvites = () => {
                           item.userName,
                           item.userAvatar,
                           `${user.firstName} ${user.lastName}`,
-                          user.avatar
+                          user.avatar,
+                          "fromInvites"
                           ))
+                          socket.emit("contactListUpdated")
                       }                         
                       }
                       >
@@ -195,6 +208,7 @@ const ManageInvites = () => {
                           user.contactInfosId,
                           item.userId,
                           ))
+                          socket.emit("contactListUpdated")
                       }                         
                       }
                       >
@@ -210,7 +224,7 @@ const ManageInvites = () => {
             <PerfectScrollbar>
             <List>
             {!InvitesSent[0] && 
-                <Typography>No invites sent </Typography>
+                <Typography align="center">No invites sent </Typography>
               }
             {InvitesSent[0] &&
                 InvitesSent.map((item) => (
@@ -232,6 +246,7 @@ const ManageInvites = () => {
                           user.contactInfosId,
                           item.userId,
                           ))
+                          socket.emit("contactListUpdated")
                       }                         
                       }
                     >

@@ -29,32 +29,34 @@ function Login(props) {
 
   // local
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [activeTabId, setActiveTabId] = useState(0);
-  const [signupFirstNameValue, setSignupFirstNameValue] = useState("NT");
-  const [signupLastNameValue, setSignupLastNameValue] = useState("1");
-  const [signupEmailValue, setSignupEmailValue] = useState("nt1@teamsclone.com");
-  const [signupPasswordValue, setSignupPasswordValue] = useState("1");
-  const [loginEmailValue, setLoginEmailValue] = useState("firoz@teamsclone.com");
-  const [loginPasswordValue, setLoginPasswordValue] = useState("12345678");
+  const [signupFirstNameValue, setSignupFirstNameValue] = useState("");
+  const [signupLastNameValue, setSignupLastNameValue] = useState("");
+  const [signupEmailValue, setSignupEmailValue] = useState("");
+  const [signupPasswordValue, setSignupPasswordValue] = useState("");
+  const [signupConfirmPasswordValue, setSignupConfirmPasswordValue] = useState("");
+  const [loginEmailValue, setLoginEmailValue] = useState("");
+  const [loginPasswordValue, setLoginPasswordValue] = useState("");
 
   const sigUpHandler = () =>{
-    setError(false);
     setIsLoading(true);
-    userSignUp(
-      signupFirstNameValue,
-      signupLastNameValue,
-      signupEmailValue,
-      signupPasswordValue,
-      props.history,
-      setIsLoading,
-      setError,
-    )
-    .then (() => {
-      setError(false)
-      setIsLoading(false)
+    if (signupPasswordValue == signupConfirmPasswordValue) {
+      userSignUp(
+        signupFirstNameValue,
+        signupLastNameValue,
+        signupEmailValue,
+        signupPasswordValue,
+        props.history,
+        setIsLoading,
+      )
+      .then (() => {
+        setIsLoading(false)
+      }
+      )
     }
-    )
+    else {
+      console.log("password not equal")
+    }
   }
 
   return (
@@ -123,7 +125,6 @@ function Login(props) {
                         loginPasswordValue,
                         props.history,
                         setIsLoading,
-                        setError,
                       )
                     }
                     variant="contained"
@@ -140,9 +141,6 @@ function Login(props) {
           )}
           {activeTabId === 1 && (
             <React.Fragment>
-              <Typography variant="h1" className={classes.greeting}>
-                Welcome!
-              </Typography>
               <Typography variant="h2" className={classes.subGreeting}>
                 Create your account
               </Typography>
@@ -206,6 +204,21 @@ function Login(props) {
                 type="password"
                 fullWidth
               />
+              <TextField
+                id="confirmPassword"
+                InputProps={{
+                  classes: {
+                    underline: classes.textFieldUnderline,
+                    input: classes.textField,
+                  },
+                }}
+                value={signupConfirmPasswordValue}
+                onChange={e => setSignupConfirmPasswordValue(e.target.value)}
+                margin="normal"
+                placeholder="Confirm Password"
+                type="password"
+                fullWidth
+              />
               <div className={classes.creatingButtonContainer}>
                 {isLoading ? (
                   <CircularProgress size={26} />
@@ -215,6 +228,7 @@ function Login(props) {
                     disabled={
                       signupEmailValue.length === 0 ||
                       signupPasswordValue.length === 0 ||
+                      signupConfirmPasswordValue.length === 0 ||
                       signupFirstNameValue.length === 0 ||
                       signupLastNameValue.length === 0
                     }

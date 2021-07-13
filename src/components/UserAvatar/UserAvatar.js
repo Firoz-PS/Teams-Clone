@@ -19,7 +19,7 @@ export default function UserAvatar({ color = "primary", ...props }) {
   return (
     <div
       className={classes.avatar}
-      style={{ backgroundColor: theme.palette.secondary.light, width: props.size, height: props.size }}
+      style={{ backgroundColor: theme.palette.secondary.dark, width: props.size, height: props.size }}
     >
       <Typography className={classes.text}>{letters}</Typography>
     </div>

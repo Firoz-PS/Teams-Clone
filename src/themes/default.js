@@ -3,7 +3,7 @@ const defaultTheme = {
   palette: {
     primary: {
       main: "#571089",
-      light: "#6d23b6",
+      light: "#ccccff",
       dark: "#47126b"
     },
     secondary: {
@@ -16,6 +16,11 @@ const defaultTheme = {
       dark2: "#495057",
       dark3: "#343a40",
       dark4: "#212529"
+    },
+    error: {
+      main: "#ff0000",
+      light: "#fd5e53",
+      dark: "#dc143c"
     }
   }
 };

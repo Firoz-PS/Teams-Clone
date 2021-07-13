@@ -9,10 +9,12 @@ const showSnackbar = () => () => {
     const { enqueueSnackbar } = useSnackbar();
     enqueueSnackbar("message");
   };
-export const selectContact = (id) => async (dispatch, getState) => {
+export const selectContact = (userId) => async (dispatch, getState) => {
     let { contacts } = getState()
+    console.log(contacts)
     const selectedContact = await contacts.Contacts.filter((contact) => {
-        if(contact._id === id){
+        if(contact.userId == userId){
+            console.log(contact)
             return contact
         }
     })
@@ -41,14 +43,16 @@ export const fetchContactInfo = (contactInfosId) => async (dispatch) => {
     return Promise.resolve();
 }
 
-export const addContact = (contactId, userId, userName, avatar, myName, myAvatar) => async (dispatch) => {
+export const addContact = (contactId, userId, userName, avatar, myName, myAvatar,type) => async (dispatch) => {
     const res = await axios.put(API_URL + `/api/contacts/addContact/${contactId}`, {
         userId,
         userName,
         avatar,
         myName,
-        myAvatar
+        myAvatar,
+        type
     })
+    console.log("payload", res.data)
         dispatch({
             type: 'ADD_CONTACT',
             payload: res.data
@@ -56,13 +60,14 @@ export const addContact = (contactId, userId, userName, avatar, myName, myAvatar
     return Promise.resolve();
 }
 
-export const addInvite = (contactId, userId, userName, avatar, myName, myAvatar) => async (dispatch) => {
+export const addInvite = (contactId, userId, userName, avatar, myName, myAvatar, type) => async (dispatch) => {
     const res = await axios.put(API_URL + `/api/contacts/addInvite/${contactId}`, {
         userId,
         userName,
         avatar,
         myName,
-        myAvatar
+        myAvatar,
+        type
     })
         dispatch({
             type: 'ADD_INVITE',

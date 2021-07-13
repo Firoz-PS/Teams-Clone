@@ -21,7 +21,7 @@ import {
   VideocamOff,
   CallEnd,
   Chat,
-  Cancel
+  FileCopy
 } from "@material-ui/icons";
 import { socket } from "../../context/AuthContext";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,6 +30,13 @@ import {
   rejectJoinRequest,
   removeMeFromParticipants,
 } from "../../redux/actions/CallActions";
+
+import {
+  addContact,
+  selectContact,
+  fetchContactInfo
+} from "../../redux/actions/ContactActions";
+
 import Peer from "simple-peer";
 import { useHistory } from "react-router-dom";
 import UserContext from "../../context/AuthContext";
@@ -42,10 +49,13 @@ import { CardContent } from "@material-ui/core";
 import { Divider } from "@material-ui/core";
 import ChatBox from "../ChatComponents/ChatBox";
 
+
+
 const LiveCall = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { CallList } = useSelector((state) => state.calls);
+  const { Contacts } = useSelector((state) => state.contacts);
   const history = useHistory();
   const { user } = useContext(UserContext);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -54,9 +64,10 @@ const LiveCall = () => {
   const [callEnded, setCallEnded] = useState(false);
   const [stream, setStream] = useState();
   const [call, setCall] = useState({});
-  const [mic, setMic] = useState(false);
-  const [video, setVideo] = useState(false);
+  const [mic, setMic] = useState(true);
+  const [video, setVideo] = useState(true);
   const [userName, setUserName] = useState(null);
+  const [otherUserId, setOtherUserId] = useState(null)
 
   const myVideo = useRef();
   const userVideo = useRef();
@@ -66,7 +77,22 @@ const LiveCall = () => {
     return <Slide direction="up" ref={ref} {...props} />;
   });
 
+  useEffect(() => {
+    socket.on("updateContact", () => {
+      dispatch(fetchContactInfo(user.contactInfosId)).then(() => {
+      });
+    });
+  });
+
   const toggleDrawerOpen = () => {
+    if(otherUserId){
+      dispatch(selectContact(otherUserId))
+      console.log("ot")    
+    }
+    else {
+      dispatch(selectContact(call.myUserId))
+      console.log("me")        
+    }
     setDrawerOpen(!drawerOpen);
   };
 
@@ -74,14 +100,18 @@ const LiveCall = () => {
     setDrawerOpen(false);
   };
 
+  // useEffect(() => {
+  //   dispatch(selectContact(call.myUserId))
+  // }, [Contacts])
+
   const muteUnmute = () => {
-    setMic(!myVideo.current.srcObject.getAudioTracks()[0].enabled);
-    myVideo.current.srcObject.getAudioTracks()[0].enabled = mic;
+    setMic(!mic);
+    myVideo.current.srcObject.getAudioTracks()[0].enabled = !mic;
   };
 
   const playStop = () => {
-    setVideo(!myVideo.current.srcObject.getVideoTracks()[0].enabled);
-    myVideo.current.srcObject.getVideoTracks()[0].enabled = video;
+    setVideo(!video)
+    myVideo.current.srcObject.getVideoTracks()[0].enabled = !video;
   };
 
   useEffect(() => {
@@ -123,6 +153,8 @@ const LiveCall = () => {
         signal: data,
         to: call.from,
         myName: `${user.firstName} ${user.lastName}`,
+        myId: user.id,
+        myAvatar: user.avatar
       });
     });
 
@@ -152,10 +184,29 @@ const LiveCall = () => {
       userVideo.current.srcObject = currentStream;
     });
 
-    socket.on("callAccepted", ({ signal, myName }) => {
+    socket.on("callAccepted", ({ signal, myName, myId, myAvatar }) => {
       setCallAccepted(true);
       setUserName(myName);
       peer.signal(signal);
+      dispatch(addContact(
+        user.contactInfosId,
+        myId,
+        myName,
+        myAvatar,
+        `${user.firstName} ${user.lastName}`,
+        user.avatar,
+        "fromCall"
+        ))
+        setOtherUserId(myId)
+        socket.emit("contactListUpdated")
+        // .then(() => {
+        //   socket.emit("contactListUpdated")
+        //   setTimeout(() => {
+        //     dispatch(selectContact(myId))
+            
+        //   }, 3000);
+        // }
+        // )
     });
 
     socket.on("callRejected", () => {
@@ -258,11 +309,14 @@ const LiveCall = () => {
           )}
           <Grid item xs={12}>
             <Paper className={classes.callBottomBar} justify="center">
+            <IconButton onClick={() => {navigator.clipboard.writeText(CallList[0]._id)}}>
+            <FileCopy />
+          </IconButton>
               <IconButton onClick={muteUnmute}>
-                {mic ? <Mic /> : <MicOff />}
+                {mic ? <Mic /> : <MicOff color="secondary"/>}
               </IconButton>
               <IconButton onClick={playStop}>
-                {video ? <Videocam /> : <VideocamOff />}
+                {video ? <Videocam /> : <VideocamOff color="secondary"/>}
               </IconButton>
               <IconButton onClick={leaveCall} color="secondary">
                 <CallEnd />

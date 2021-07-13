@@ -31,6 +31,7 @@ const contactReducer = (state = initialState, action) => {
         case 'ADD_CONTACT': {
             state.Contacts = action.payload.contacts
             state.InvitesReceived = action.payload.invitesReceived
+            console.log(state)
             return {
                 ...state,
             }

@@ -53,13 +53,12 @@ const userReducer = (state, action) => {
             const { user } = action.payload
             return {
                 ...state,
-                isAuthenticated: true,
                 user,
+                isAuthenticated: true,
             }
         }
         case 'USER_SIGN_UP': {
             const { user } = action.payload
-            console.log(user)
             return {
                 ...state,
                 user,
@@ -170,8 +169,7 @@ useEffect(() => {
     })()
 }, [])
 
-const userSignIn = async (email, password, history, setIsLoading, setError) => {
-    setError(false);
+const userSignIn = async (email, password, history, setIsLoading) => {
     setIsLoading(true);
     const res = await axios.post(API_URL + '/api/user/signin', {
         email,
@@ -179,7 +177,6 @@ const userSignIn = async (email, password, history, setIsLoading, setError) => {
     })
     const { accessToken, user } = res.data
     setToken(accessToken)
-    setError(false)
     setIsLoading(false)
     dispatch({
         type: 'USER_SIGN_IN',
@@ -189,7 +186,7 @@ const userSignIn = async (email, password, history, setIsLoading, setError) => {
     })
 }
 
-const userSignUp = async (firstName, lastName, email, password, history, setIsLoading, setError) => {
+const userSignUp = async (firstName, lastName, email, password, history, setIsLoading) => {
     const res = await axios.post(API_URL + '/api/user/signup', {
         firstName,
         lastName,

@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -27,7 +27,10 @@ import { useDispatch, useSelector } from "react-redux";
 // styles
 import useStyles from "./styles";
 import UserAvatar from '../UserAvatar/UserAvatar';
-import { removeContact } from '../../redux/actions/ContactActions';
+import { removeContact, fetchContactInfo } from '../../redux/actions/ContactActions';
+
+import { socket } from "../../context/AuthContext";
+
 
 const ViewContactDetails = () => {
   const classes = useStyles()
@@ -36,6 +39,14 @@ const ViewContactDetails = () => {
   const { ContactToView } = useSelector((state) => state.contacts);
   const [isLoading, setIsLoading] = useState(null);
 
+  useEffect(() => {
+    socket.on("updateContact", () => {
+      setIsLoading(true);
+      dispatch(fetchContactInfo(user.contactInfosId)).then(() => {
+        setIsLoading(false);
+      });
+    });
+  });
 
   return (
       <Card>
@@ -96,6 +107,7 @@ const ViewContactDetails = () => {
                 user.contactInfosId,
                 viewUser.id,
                 ))
+                socket.emit("contactListUpdated")
             }                         
             }          
             >

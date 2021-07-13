@@ -25,5 +25,5 @@ export default makeStyles(theme => ({
     position: "absolute",
     right: theme.spacing(2),
     bottom: theme.spacing(2)  
-  }  
+  },
 }));

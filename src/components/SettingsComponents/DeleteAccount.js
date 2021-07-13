@@ -29,10 +29,12 @@ import UserContext from "../../context/AuthContext";
 
 // styles
 import useStyles from "./styles";
+import { useHistory } from 'react-router';
 
 const DeleteAccount = () => {
+  const history = useHistory()
   const classes = useStyles()
-  const { user, deleteAccount } = useContext(UserContext)
+  const { user, deleteAccount, userSignOut } = useContext(UserContext)
   const initialState = {
     password: "",
     deleteText: "",
@@ -63,6 +65,7 @@ const DeleteAccount = () => {
     deleteAccount(values.password)
     setValues(initialState)
     setIsEditing(false)
+    userSignOut(history)
   }
 
   const handleOpenModal = () => {
@@ -103,7 +106,7 @@ const DeleteAccount = () => {
     />
     </DialogContent>
     <DialogActions>
-      <Button onClick={handleCancel} color="secondary">
+      <Button onClick={handleCancel} color="danger">
         Cancel
       </Button>
       <Button onClick={handleSaveDetails} color="primary">

@@ -141,8 +141,8 @@ const ChatContacts = () => {
         });
       }, []);
 
-    const selectContactHandler = (id) => {
-        dispatch(selectContact(id))
+    const selectContactHandler = (userId) => {
+        dispatch(selectContact(userId))
     }  
 
     return (
@@ -159,10 +159,16 @@ const ChatContacts = () => {
         <PerfectScrollbar>
         <List>
               {isLoading && <CircularProgress size={60} />}
+              {!isLoading && !Contacts[0] && 
+                <Typography
+                align="center"
+                >
+                No contacts added, go to contacts page to add new contacts
+                </Typography>}
               {!isLoading &&
                 Contacts &&
                 Contacts.map((contact) => (
-                  <ListItem button key={contact._id} onClick={() => selectContactHandler(contact._id)} >
+                  <ListItem button key={contact._id} onClick={() => selectContactHandler(contact.userId)} >
                     <ListItemAvatar>
                     <UserAvatar name={contact.userName} size={`40px`} />
                     </ListItemAvatar>

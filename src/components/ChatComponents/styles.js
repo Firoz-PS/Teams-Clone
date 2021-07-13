@@ -1,15 +1,18 @@
 import { makeStyles } from "@material-ui/styles";
 
 export default makeStyles(theme => ({
-  cardBody: {
-    height: "100%"
-  },  
+  // cardBody: {
+  //   height: "100%"
+  // },  
   header: {
-    backgroundColor: theme.palette.primary.light,
+    // backgroundColor: theme.palette.primary.light,
   },
   chatBoxContent: {
-    height: "70vh",
+    height: "75vh",
     position: "relative"  
+  },
+  messagesContainer: {
+    height: "60vh",
   },
   chatContactsContent: {
     height: "75vh",
@@ -31,13 +34,16 @@ export default makeStyles(theme => ({
     justifyContent: "flex-start"
   },
   myMessageCard: {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.primary.dark,
     padding: theme.spacing(1),
-    color: "white"
+    color: "white",
+    marginBottom: theme.spacing(1)
   },
   theirMessageCard: {
-    backgroundColor: theme.palette.secondary.light,
-    padding: theme.spacing(1)
+    backgroundColor: theme.palette.primary.light,
+    padding: theme.spacing(1),
+    marginBottom: theme.spacing(1)
+
   },
   sendMessageField: {
     marginLeft: theme.spacing(1),
