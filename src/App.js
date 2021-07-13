@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
 
 // components
@@ -11,31 +11,26 @@ import Login from "./pages/Login/Login";
 import UserContext from "./context/AuthContext";
 
 export default function App() {
-  // global
   const { isAuthenticated, user } = useContext(UserContext);
-  console.log(user)
 
   return (
     <HashRouter>
       <Switch>
         <Route exact path="/" render={() => <Redirect to="/app/call" />} />
-        <Route
-          exact
-          path="/app"
-          render={() => <Redirect to="/app/call" />}
-        />
+        <Route exact path="/app" render={() => <Redirect to="/app/call" />} />
         <PrivateRoute path="/app" component={Layout} />
         <PublicRoute path="/login" component={Login} />
       </Switch>
     </HashRouter>
   );
 
+  // functions to check whether the user is authenticated and redirect to pages accordingly
 
   function PrivateRoute({ component, ...rest }) {
     return (
       <Route
         {...rest}
-        render={props =>
+        render={(props) =>
           isAuthenticated ? (
             React.createElement(component, props)
           ) : (
@@ -57,7 +52,7 @@ export default function App() {
     return (
       <Route
         {...rest}
-        render={props =>
+        render={(props) =>
           isAuthenticated ? (
             <Redirect
               to={{

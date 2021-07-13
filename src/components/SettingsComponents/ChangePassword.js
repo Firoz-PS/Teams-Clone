@@ -72,14 +72,10 @@ const ChangePassword = () => {
       if(values.newPassword === values.confirmPassword){
         setIsModalOpen(true)
       }
-      else {
-          console.log("password doesn't match")
-      }
   }
 
   return (
     <>
-    {console.log(isModalOpen)}
     <Dialog 
     open={isModalOpen}
     TransitionComponent={Transition}

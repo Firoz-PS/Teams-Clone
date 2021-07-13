@@ -72,9 +72,6 @@ const DeleteAccount = () => {
       if(values.deleteText === "delete account"){
         setIsModalOpen(true)
       }
-      else {
-          console.log("text doesn't match")
-      }
   }
 
   return (

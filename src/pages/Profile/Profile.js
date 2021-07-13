@@ -1,5 +1,7 @@
 import React from 'react';
 import { Grid } from "@material-ui/core";
+
+// components
 import UpdateDetails from '../../components/ProfileComponents/UpdateDetails';
 import UpdateAvatar from '../../components/ProfileComponents/UpdateAvatar';
 

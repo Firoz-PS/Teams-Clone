@@ -2,13 +2,11 @@ import React, { createContext, useEffect, useReducer } from 'react'
 import jwtDecode from 'jwt-decode'
 import axios from 'axios'
 import { io } from 'socket.io-client';
-import { useHistory } from 'react-router';
 
 
 const API_URL = "http://localhost:5000";
 export const socket = io(API_URL);
 
-// const history = useHistory()
 const initialState = {
     isAuthenticated: false,
     isInitialised: false,
@@ -24,7 +22,6 @@ const isValidToken = (accessToken) => {
 
     const decodedToken = jwtDecode(accessToken)
     const currentTime = Date.now() / 1000
-    console.log(decodedToken)
     return decodedToken.exp > currentTime
 }
 
@@ -74,7 +71,6 @@ const userReducer = (state, action) => {
         }
         case 'VIEW_USER': {
             state.viewUser = action.payload.user
-            console.log(state.viewUser)
             return {
                 ...state,
             }
@@ -284,9 +280,6 @@ const updateAvatar = async (formData) => {
     })
 }
 
-if (!state.isInitialised) {
-    console.log("Session expired! you need to signin again")
-}
 
 return (
     <UserContext.Provider

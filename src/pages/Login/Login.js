@@ -7,15 +7,11 @@ import {
   Tabs,
   Tab,
   TextField,
-  Fade,
 } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
-import classnames from "classnames";
 
 // styles
 import useStyles from "./styles";
-
-// logo
 
 // context
 import UserContext from "../../context/AuthContext";
@@ -23,11 +19,10 @@ import UserContext from "../../context/AuthContext";
 function Login(props) {
   var classes = useStyles();
 
-  // global
-  // var userDispatch = useUserDispatch();
-  const { userSignUp, userSignIn} = useContext(UserContext)
+  // global states
+  const { userSignUp, userSignIn } = useContext(UserContext);
 
-  // local
+  // local states
   const [isLoading, setIsLoading] = useState(false);
   const [activeTabId, setActiveTabId] = useState(0);
   const [signupFirstNameValue, setSignupFirstNameValue] = useState("");
@@ -38,7 +33,8 @@ function Login(props) {
   const [loginEmailValue, setLoginEmailValue] = useState("");
   const [loginPasswordValue, setLoginPasswordValue] = useState("");
 
-  const sigUpHandler = () =>{
+  // function to signUp a user
+  const sigUpHandler = () => {
     setIsLoading(true);
     if (signupPasswordValue == signupConfirmPasswordValue) {
       userSignUp(
@@ -48,21 +44,31 @@ function Login(props) {
         signupPasswordValue,
         props.history,
         setIsLoading,
-      )
-      .then (() => {
-        setIsLoading(false)
-      }
-      )
+      ).then(() => {
+        setIsLoading(false);
+      });
     }
-    else {
-      console.log("password not equal")
-    }
+  };
+
+  // function to signIn a user
+  const signInHandler = () => {
+    setIsLoading(true)
+    userSignIn(
+      loginEmailValue,
+      loginPasswordValue,
+      props.history,
+      setIsLoading,
+    ).then(() => {
+      setIsLoading(true)
+    })
   }
 
   return (
     <Grid container className={classes.container}>
       <div className={classes.logotypeContainer}>
-        <Typography className={classes.logotypeText} align="center">Welcome to Teams Clone</Typography>
+        <Typography className={classes.logotypeText} align="center">
+          Welcome to Teams Clone
+        </Typography>
       </div>
       <div className={classes.formContainer}>
         <div className={classes.form}>
@@ -90,7 +96,7 @@ function Login(props) {
                   },
                 }}
                 value={loginEmailValue}
-                onChange={e => setLoginEmailValue(e.target.value)}
+                onChange={(e) => setLoginEmailValue(e.target.value)}
                 margin="normal"
                 placeholder="Email Adress"
                 type="email"
@@ -105,7 +111,7 @@ function Login(props) {
                   },
                 }}
                 value={loginPasswordValue}
-                onChange={e => setLoginPasswordValue(e.target.value)}
+                onChange={(e) => setLoginPasswordValue(e.target.value)}
                 margin="normal"
                 placeholder="Password"
                 type="password"
@@ -117,16 +123,10 @@ function Login(props) {
                 ) : (
                   <Button
                     disabled={
-                      loginEmailValue.length === 0 || loginPasswordValue.length === 0
+                      loginEmailValue.length === 0 ||
+                      loginPasswordValue.length === 0
                     }
-                    onClick={() =>
-                      userSignIn(
-                        loginEmailValue,
-                        loginPasswordValue,
-                        props.history,
-                        setIsLoading,
-                      )
-                    }
+                    onClick={signInHandler}
                     variant="contained"
                     color="primary"
                     size="large"
@@ -135,7 +135,6 @@ function Login(props) {
                     Login
                   </Button>
                 )}
-                
               </div>
             </React.Fragment>
           )}
@@ -153,27 +152,27 @@ function Login(props) {
                   },
                 }}
                 value={signupFirstNameValue}
-                onChange={e => setSignupFirstNameValue(e.target.value)}
+                onChange={(e) => setSignupFirstNameValue(e.target.value)}
                 margin="normal"
                 placeholder="First Name"
                 type="text"
                 fullWidth
               />
               <TextField
-              id="lastName"
-              InputProps={{
-                classes: {
-                  underline: classes.textFieldUnderline,
-                  input: classes.textField,
-                },
-              }}
-              value={signupLastNameValue}
-              onChange={e => setSignupLastNameValue(e.target.value)}
-              margin="normal"
-              placeholder="Last Name"
-              type="text"
-              fullWidth
-            />
+                id="lastName"
+                InputProps={{
+                  classes: {
+                    underline: classes.textFieldUnderline,
+                    input: classes.textField,
+                  },
+                }}
+                value={signupLastNameValue}
+                onChange={(e) => setSignupLastNameValue(e.target.value)}
+                margin="normal"
+                placeholder="Last Name"
+                type="text"
+                fullWidth
+              />
               <TextField
                 id="email"
                 InputProps={{
@@ -183,7 +182,7 @@ function Login(props) {
                   },
                 }}
                 value={signupEmailValue}
-                onChange={e => setSignupEmailValue(e.target.value)}
+                onChange={(e) => setSignupEmailValue(e.target.value)}
                 margin="normal"
                 placeholder="Email Adress"
                 type="email"
@@ -198,7 +197,7 @@ function Login(props) {
                   },
                 }}
                 value={signupPasswordValue}
-                onChange={e => setSignupPasswordValue(e.target.value)}
+                onChange={(e) => setSignupPasswordValue(e.target.value)}
                 margin="normal"
                 placeholder="Password"
                 type="password"
@@ -213,7 +212,7 @@ function Login(props) {
                   },
                 }}
                 value={signupConfirmPasswordValue}
-                onChange={e => setSignupConfirmPasswordValue(e.target.value)}
+                onChange={(e) => setSignupConfirmPasswordValue(e.target.value)}
                 margin="normal"
                 placeholder="Confirm Password"
                 type="password"

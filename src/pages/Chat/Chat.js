@@ -1,5 +1,5 @@
 import React from 'react';
-import { Divider, Grid, Paper, AppBar } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 
 // styles
 import useStyles from "./styles";

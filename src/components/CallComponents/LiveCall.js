@@ -87,11 +87,9 @@ const LiveCall = () => {
   const toggleDrawerOpen = () => {
     if(otherUserId){
       dispatch(selectContact(otherUserId))
-      console.log("ot")    
     }
     else {
       dispatch(selectContact(call.myUserId))
-      console.log("me")        
     }
     setDrawerOpen(!drawerOpen);
   };
@@ -212,7 +210,7 @@ const LiveCall = () => {
     socket.on("callRejected", () => {
       setCallAccepted(true);
       dispatch(removeMeFromParticipants(user.id)
-      .then(console.log(CallList)));
+);
     });
 
     connectionRef.current = peer;
@@ -229,14 +227,12 @@ const LiveCall = () => {
   const handleDisagree = () => {
     dispatch(rejectJoinRequest(CallList[0]._id, call.myUserId)).then(() => {
       rejectCall();
-      console.log(CallList);
     });
   };
 
   const handleAgree = () => {
     dispatch(acceptJoinRequest(CallList[0]._id, call.myUserId)).then(() => {
       answerCall();
-      console.log(CallList);
     });
   };
 

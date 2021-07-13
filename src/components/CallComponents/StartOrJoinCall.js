@@ -45,7 +45,6 @@ export default function CallStarter({
       startCall(`${user.firstName} ${user.lastName}`, callName, socket.id),
     ).then(() => {
       history.push(`/app/call/${CallList[0]._id}`);
-      console.log(CallList[0]._id);
     });
   };
 
@@ -53,7 +52,6 @@ export default function CallStarter({
     dispatch(
       joinCall(`${user.firstName} ${user.lastName}`, callId, socket.id),
     ).then(() => {
-      console.log(CallList);
       history.push(`/app/call/${callId}`);
     });
   };

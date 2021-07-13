@@ -62,7 +62,6 @@ useEffect(() => {
 });
 })
   const sendMessageOnEnter = (event) => {
-      console.log( event.type)
       if(event.key === "Enter" || event.type === "click" && !event.shiftKey && message !== ""){
                 dispatch(sendMessage(SelectedContact[0].chatId, `${user.firstName} ${user.lastName}`, message.trim()))
                 socket.emit("messageSent")
